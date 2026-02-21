@@ -492,3 +492,50 @@ END //
 
 DELIMITER ;
 
+
+-- VIEWS
+
+CREATE VIEW project_financial_summary AS
+SELECT
+    p.id AS project_id,
+    p.project_name,
+    pb.labour_cost +
+    pb.material_cost +
+    pb.equipment_rent +
+    pb.subcontractor_cost AS total_budget,
+    IFNULL(SUM(e.amount),0) AS total_expense,
+    IFNULL(SUM(r.amount),0) AS total_revenue
+FROM Project p
+JOIN Project_Budget pb
+    ON p.budget_id = pb.id
+LEFT JOIN Expense e
+    ON p.id = e.project_id
+LEFT JOIN Revenue r
+    ON p.id = r.project_id
+GROUP BY p.id;
+
+CREATE VIEW active_hr_allocation AS
+SELECT
+    hr.name,
+    p.project_name,
+    ha.start_date,
+    ha.end_date
+FROM HR_Allocation ha
+JOIN Human_Resource hr
+    ON ha.hr_id = hr.id
+JOIN Project p
+    ON ha.project_id = p.id
+WHERE ha.end_date IS NULL;
+
+
+CREATE VIEW equipment_usage AS
+SELECT
+    e.id,
+    e.name,
+    e.status,
+    p.project_name
+FROM Equipment e
+LEFT JOIN Equipment_Allocation ea
+    ON e.id = ea.equipment_id
+LEFT JOIN Project p
+    ON ea.project_id = p.id;
