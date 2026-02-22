@@ -1,3 +1,4 @@
+-- Active: 1771699096155@@mysql-12edbec0-adbms.g.aivencloud.com@19947@ConstructionDB
 CREATE TABLE User (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
@@ -249,17 +250,6 @@ CREATE TABLE Equipment (
     FOREIGN KEY(category_id) REFERENCES Equipment_Category(id)
 );
 
-CREATE TABLE Equipment (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    category_id INT,
-    name VARCHAR(150) NOT NULL,
-    status ENUM('Available','In-use','Under-maintenance')
-        NOT NULL DEFAULT 'Available',
-    ownership_type ENUM('Company-owned','Rented') NOT NULL,
-
-    FOREIGN KEY(category_id) REFERENCES Equipment_Category(id)
-);
-
 CREATE TABLE Renter (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -488,6 +478,7 @@ BEGIN
     WHERE category_id = NEW.category_id;
 END//
 
+
 CREATE TRIGGER target_project_created
 AFTER INSERT ON Project
 FOR EACH ROW
@@ -495,7 +486,7 @@ BEGIN
     INSERT INTO Progress_Log (
         project_id,
         log_text,
-        date
+        log_date
     )
     VALUES (
         NEW.id,
@@ -542,6 +533,25 @@ BEGIN
         );
     END IF;
 END //
+
+
+CREATE TRIGGER hash_user_password BEFORE INSERT ON User
+FOR EACH ROW
+BEGIN
+    SET NEW.password = SHA2(NEW.password, 256);
+END;
+//
+
+CREATE TRIGGER hash_user_password_update BEFORE UPDATE ON User
+FOR EACH ROW
+BEGIN
+    IF OLD.password <> NEW.password THEN
+        SET NEW.password = SHA2(NEW.password, 256);
+    END IF;
+END;
+//
+
+DELIMITER ;
 
 
 DELIMITER ;
@@ -593,3 +603,17 @@ LEFT JOIN Equipment_Allocation ea
     ON e.id = ea.equipment_id
 LEFT JOIN Project p
     ON ea.project_id = p.id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
