@@ -24,6 +24,14 @@ CREATE TABLE Client (
     IBAN VARCHAR(50) NOT NULL UNIQUE
 );
 
+ALTER TABLE Client DROP COLUMN IBAN;
+ALTER TABLE Client ADD COLUMN account_id INT;
+
+ALTER TABLE Subcontractor
+ADD CONSTRAINT fk_account_Client
+FOREIGN KEY (account_id)
+REFERENCES Account_Details(id);
+
 CREATE TABLE Project_Budget (
     id INT AUTO_INCREMENT PRIMARY KEY,
     labour_cost INT NOT NULL CHECK(labour_cost >= 0),
@@ -99,6 +107,14 @@ CREATE TABLE Expense (
     FOREIGN KEY(request_id) REFERENCES Payment_Request(id)
 );
 
+ALTER TABLE Expense DROP COLUMN receiver_id;
+ALTER TABLE Expense ADD COLUMN account_id INT;
+
+ALTER TABLE Subcontractor
+ADD CONSTRAINT fk_account_Expense
+FOREIGN KEY (account_id)
+REFERENCES Account_Details(id);
+
 CREATE TABLE Invoice_Request (
     id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
@@ -132,6 +148,13 @@ CREATE TABLE HR_Category (
     name VARCHAR(100) NOT NULL
 );
 
+CREATE TABLE Account_Details (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  IBAN VARCHAR(50) NOT NULL UNIQUE,
+  bank_name VARCHAR(50) NOT NULL,
+  holder_name VARCHAR(50) NOT NULL
+
+);
 CREATE TABLE Human_Resource (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -141,6 +164,13 @@ CREATE TABLE Human_Resource (
     IBAN VARCHAR(50) NOT NULL UNIQUE,
     status ENUM('Active','Inactive') NOT NULL
 );
+
+ALTER TABLE Human_Resource DROP COLUMN IBAN;
+ALTER TABLE Human_Resource ADD COLUMN account_id INT;
+ALTER TABLE Human_Resource
+ADD CONSTRAINT fk_account
+FOREIGN KEY (account_id)
+REFERENCES Account_Details(id);
 
 CREATE TABLE Skilled_Labour (
     hr_id INT PRIMARY KEY,
@@ -183,6 +213,9 @@ CREATE TABLE HR_Allocation_Request (
     FOREIGN KEY(category_id) REFERENCES HR_Category(id),
     FOREIGN KEY(user_id) REFERENCES User(id)
 );
+
+
+
 
 CREATE TABLE HR_Allocation (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -233,6 +266,16 @@ CREATE TABLE Renter (
     IBAN VARCHAR(50) UNIQUE NOT NULL
 );
 
+
+ALTER TABLE Renter DROP COLUMN IBAN;
+ALTER TABLE Renter ADD COLUMN account_id INT;
+
+ALTER TABLE Renter
+ADD CONSTRAINT fk_account_id
+FOREIGN KEY (account_id)
+REFERENCES Account_Details(id);
+
+
 CREATE TABLE Rental_Details (
     equipment_id INT PRIMARY KEY,
     renter_id INT,
@@ -282,6 +325,14 @@ CREATE TABLE Supplier (
     name VARCHAR(150) NOT NULL,
     IBAN VARCHAR(50) UNIQUE NOT NULL
 );
+
+ALTER TABLE Supplier DROP COLUMN IBAN;
+ALTER TABLE Supplier ADD COLUMN account_id INT;
+
+ALTER TABLE Supplier
+ADD CONSTRAINT fk_account_supplier
+FOREIGN KEY (account_id)
+REFERENCES Account_Details(id);
 
 CREATE TABLE Material_Shipment (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -347,6 +398,14 @@ CREATE TABLE Subcontractor (
     FOREIGN KEY(category_id) REFERENCES Subcontractor_Category(id)
 );
 
+ALTER TABLE Subcontractor DROP COLUMN IBAN;
+ALTER TABLE Subcontractor ADD COLUMN account_id INT;
+
+ALTER TABLE Subcontractor
+ADD CONSTRAINT fk_account_Subcontractor
+FOREIGN KEY (account_id)
+REFERENCES Account_Details(id);
+
 CREATE TABLE Subcontractor_Allocation_Request (
     id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
@@ -381,11 +440,6 @@ CREATE TABLE Subcontractor_Allocation (
 -- it will be used in the client dashboard.
 CREATE INDEX idx_project_client
 ON Project(client_id);
-
--- it will speeds up the queries while viewing the project managed by a specific project manager.
--- it will be frequently used in manager role views.
-CREATE INDEX idx_project_manager
-ON Project(manager_id);
 
 -- it will improve performance when fetching progress history of a project.
 CREATE INDEX idx_progress_project
