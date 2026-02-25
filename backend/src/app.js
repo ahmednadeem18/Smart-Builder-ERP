@@ -1,6 +1,6 @@
 import express from "express"
 import cors from "cors"
-import testRoutes from "./routes/test.routes.js";
+import testRoutes from "./routes/testdb.routes.js"
 
 
 
@@ -12,6 +12,5 @@ app.use(
     credentials: true
   })
 );
-app.use("/api/test", testRoutes);
-
+app.use("/api/testdb", testRoutes);
 export default app; 
