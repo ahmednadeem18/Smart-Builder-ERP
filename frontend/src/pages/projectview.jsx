@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getProjects } from "../services/project.services.js";
+import { GetProjects } from "../services/project.services.js";
 
 function Projects() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    getProjects()
+    GetProjects()
       .then(data => setProjects(data))
       .catch(err => console.error(err));
   }, []);
