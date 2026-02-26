@@ -1,6 +1,7 @@
 import dotenv from "dotenv"
 import app from "./src/app.js"
 import db from "./config/db.js"
+import cors from "cors"
 
 dotenv.config();
 
@@ -20,5 +21,12 @@ async function StartServer()
     console.error(":( DATABASE connection Failed: ", err);
   }
 }
+
+
+
+app.use(cors({
+  origin: "https://smartbuildererp.onrender.com",
+  credentials: true
+}));
 
 StartServer();
