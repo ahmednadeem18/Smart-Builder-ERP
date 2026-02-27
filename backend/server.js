@@ -1,32 +1,18 @@
-import dotenv from "dotenv"
-import app from "./src/app.js"
-import db from "./config/db.js"
-import cors from "cors"
+const express = require("express");
+const cors = require("cors");
+const app = express();
 
-dotenv.config();
+app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
-
-async function StartServer()
-{
-  try {
-    await db.query("SELECT 1");
-    console.log("Suceesfully connected to the DATABASE. :)");
-
-    app.listen(PORT, () => {
-      console.log(`Server is now running on PORT ${PORT} :) `);
-    });
-  }
-  catch (err)  {
-    console.error(":( DATABASE connection Failed: ", err);
-  }
-}
-
-
+const allowedOrigin = "https://smartbuildererp.vercel.app";
 
 app.use(cors({
-  origin: "https://smartbuildererp.onrender.com",
+  origin: allowedOrigin,
   credentials: true
 }));
 
-StartServer();
+const projectRoutes = require("./routes/project.routes.js");
+app.use("/api", projectRoutes);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
