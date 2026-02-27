@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_API_URL
+const API = "http://localhost:5000"
 
 export async function request(endpoint, options = {}) {
   const response = await fetch(`${API}${endpoint}`, {
