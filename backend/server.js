@@ -4,12 +4,28 @@ const app = express();
 
 app.use(express.json());
 
-const allowedOrigin = "https://smartbuildererp.vercel.app";
+
+const allowedOrigins = [
+  "https://smartbuildererp.vercel.app",
+  "http://localhost:5173"
+];
 
 app.use(cors({
-  origin: allowedOrigin,
+  origin: (origin, callback) => {
+
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true
 }));
+
+
+
 
 const projectRoutes = require("./routes/project.routes.js");
 app.use("/api", projectRoutes);
