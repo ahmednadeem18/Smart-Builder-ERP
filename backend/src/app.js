@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { errorHandler } from "./middleware/ErrorHandler.js";
 import projectRoutes from "./routes/project.routes.js";
 
 const app = express();
@@ -28,5 +29,6 @@ app.use(cors({
 }));
 
 app.use("/api", projectRoutes);
+app.use(errorHandler);
 
 export default app;

@@ -1,4 +1,5 @@
 
+
 export const HandleQuery = async(res, query, params = []) => {
   try {
     const [rows] = await db.query(query, params);
