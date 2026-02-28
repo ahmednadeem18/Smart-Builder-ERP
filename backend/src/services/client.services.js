@@ -5,18 +5,18 @@ export const GetAllClients = async () => {
   return await repo.GetAllClients();
 }
 
-export const GetSpecificClient = async () => {
-  return await repo.GetSpecificClient();
+export const GetSpecificClient = async (id) => {
+  return await repo.GetSpecificClient(id);
 }
 
-export const GetProjectsOfSpecificClient = async () => {
+export const GetProjectsOfSpecificClient = async (id) => {
   return await repo.GetProjectsOfSpecificClient();
 }
 
-export const GetPaymentsOfSpecificClient = async () => {
+export const GetPaymentsOfSpecificClient = async (id) => {
   return await repo.GetPaymentsOfSpecificClient();
 }
 
-export const GetInvoiceOfSpecificClient = async () => {
+export const GetInvoiceOfSpecificClient = async (id) => {
   return await repo.GetInvoiceOfSpecificClient();
 }

@@ -27,7 +27,8 @@ export const GetAllOngoingProjects = async (req, res, next) => {
 
 export const GetProjectBudgetOverview = async (req, res, next) => {
   try {
-    const projects = await service.GetProjectBudgetOverview();  
+    const { id } = req.params;
+    const projects = await service.GetProjectBudgetOverview(id);  
     res.status(200).json({
       success: true,
       data: projects

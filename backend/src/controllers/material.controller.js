@@ -27,7 +27,8 @@ export const GetAllShipments = async (req, res, next) => {
 
 export const GetSpecificShipment = async (req, res, next) => {
   try {
-    const projects = await service.GetSpecificShipment();  
+    const { id } = req.params;
+    const projects = await service.GetSpecificShipment(id);  
     res.status(200).json({
       success: true,
       data: projects

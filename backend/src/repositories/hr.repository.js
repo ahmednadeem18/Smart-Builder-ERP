@@ -1,4 +1,5 @@
 import db from '../../config/db.js'
+import { ExecuteQuery } from '../../utils/queryhandler.js';
 
 
 /*
@@ -32,6 +33,5 @@ export const GetAllHumanResources = async () => {
       sl.category_id,
       ul.category_id
   )`;
-  const [rows] = await db.query(query);
-  return rows;
+  return ExecuteQuery(query);
 }

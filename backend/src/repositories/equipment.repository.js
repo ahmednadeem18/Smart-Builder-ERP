@@ -1,4 +1,5 @@
 import db from '../../config/db.js'
+import { ExecuteQuery } from '../../utils/queryhandler.js';
 
 /* 
 
@@ -14,8 +15,7 @@ export const GetAllEquipments = async () => {
   FROM Equipment e
   JOIN Equipment_Category ec
   ON e.category_id = ec.id;`;
-  const [rows] = await db.query(query);
-  return rows;
+  return ExecuteQuery(query);
 }
 
 /*
@@ -36,8 +36,7 @@ export const GetAllRentedEquipments = async () => {
   ON rd.equipment_id = e.id
   JOIN Renter r
   ON rd.renter_id = r.id;`;
-  const [rows] = await db.query(query);
-  return rows;
+  return ExecuteQuery(query);
 }
 
 
@@ -56,6 +55,5 @@ export const GetOwnedEquipments = async () => {
   JOIN Equipment_Category ec
   ON e.category_id = ec.id
   WHERE e.ownership_type='Company-owned';`;
-  const [rows] = await db.query(query);
-  return rows;
+  return ExecuteQuery(query);
 }

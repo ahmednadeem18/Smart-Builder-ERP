@@ -1,4 +1,5 @@
 import db from '../../config/db.js'
+import { ExecuteQuery } from '../../utils/queryhandler.js';
 
 
 /* 
@@ -18,8 +19,8 @@ export const GetAllClients =  async () => {
     LEFT JOIN Account_Details ad
     ON c.account_id = ad.id`;
   
-  const [rows] = await db.query(query);
-  return rows;
+  return await ExecuteQuery(query);
+
 }
 
 
@@ -29,9 +30,9 @@ export const GetAllClients =  async () => {
   for listing the specfic cleint along with their
   account details
 */
-export const GetSpecificClient = async () => {
+export const GetSpecificClient = async (id) => {
 
-  const { id } = req.params;
+  
   const query = `
       SELECT
       c.id,
@@ -43,17 +44,15 @@ export const GetSpecificClient = async () => {
       FROM Client c
       LEFT JOIN Account_Details ad
       ON c.account_id=ad.id
-      WHERE c.id=?
-  `
-  const [rows] = await db.query(query);
-  return rows;
+      WHERE c.id=?`
+  return await ExecuteQuery(query, [id]);
 }
 
 /* 
   this query will be used in the client profile 
   for listing down all their projects
 */
-export const GetProjectsOfSpecificClient = async () => {
+export const GetProjectsOfSpecificClient = async (id) => {
 
   const { id } = req.params;
   const query = `
@@ -64,10 +63,8 @@ export const GetProjectsOfSpecificClient = async () => {
       start_date,
       end_date
       FROM Project
-      WHERE client_id=?
-  `
-  const [rows] = await db.query(query);
-  return rows;
+      WHERE client_id=?`
+  return await ExecuteQuery(query, [id]);
 }
 
 
@@ -75,7 +72,7 @@ export const GetProjectsOfSpecificClient = async () => {
   this query will be used in the client profile 
   will display the finance of them
 */
-export const GetPaymentsOfSpecificClient = async () => {
+export const GetPaymentsOfSpecificClient = async (id) => {
 
   const { id } = req.params;
   const query = `
@@ -85,10 +82,8 @@ export const GetPaymentsOfSpecificClient = async () => {
       FROM Revenue r
       JOIN Project p ON r.project_id=p.id
       WHERE r.client_id=?
-      GROUP BY p.id
-  `
-  const [rows] = await db.query(query);
-  return rows;
+      GROUP BY p.id`
+  return await ExecuteQuery(query, [id]);
 }
 
 
@@ -97,7 +92,7 @@ export const GetPaymentsOfSpecificClient = async () => {
   this query will be used in the client profile 
   will display the invoices of them
 */
-export const GetInvoiceOfSpecificClient = async () => {
+export const GetInvoiceOfSpecificClient = async (id) => {
 
   const { id } = req.params;
   const query = `
@@ -108,9 +103,7 @@ export const GetInvoiceOfSpecificClient = async () => {
       ir.req_date
       FROM Invoice_Request ir
       JOIN Project p ON ir.project_id=p.id
-      WHERE ir.client_id=?;
-  `
-  const [rows] = await db.query(query);
-  return rows;
+      WHERE ir.client_id=?;`
+  return await ExecuteQuery(query, [id]);
 }
 

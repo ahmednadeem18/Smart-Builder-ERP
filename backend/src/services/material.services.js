@@ -9,6 +9,6 @@ export const GetAllShipments = async () => {
   return await repo.GetAllShipments();
 }
 
-export const GetSpecificShipment = async () => {
-  return await repo.GetSpecificShipment();
+export const GetSpecificShipment = async (id) => {
+  return await repo.GetSpecificShipment(id);
 }

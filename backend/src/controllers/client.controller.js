@@ -15,7 +15,8 @@ export const GetAllClients = async (req, res, next) => {
 
 export const GetSpecificClient = async (req, res, next) => {
   try {
-    const clients = await service.GetSpecificClient();  
+    const { id } = req.params;
+    const clients = await service.GetSpecificClient(id);  
     res.status(200).json({
       success: true,
       data: clients
@@ -27,7 +28,8 @@ export const GetSpecificClient = async (req, res, next) => {
 
 export const GetProjectsOfSpecificClient = async (req, res, next) => {
   try {
-    const clients = await service.GetProjectsOfSpecificClient();  
+    const { id } = req.params;
+    const clients = await service.GetProjectsOfSpecificClient(id);  
     res.status(200).json({
       success: true,
       data: clients
@@ -39,7 +41,8 @@ export const GetProjectsOfSpecificClient = async (req, res, next) => {
 
 export const GetPaymentsOfSpecificClient = async (req, res, next) => {
   try {
-    const clients = await service.GetPaymentsOfSpecificClient();  
+    const { id } = req.params;
+    const clients = await service.GetPaymentsOfSpecificClient(id);  
     res.status(200).json({
       success: true,
       data: clients
@@ -51,7 +54,8 @@ export const GetPaymentsOfSpecificClient = async (req, res, next) => {
 
 export const GetInvoiceOfSpecificClient = async (req, res, next) => {
   try {
-    const clients = await service.GetInvoiceOfSpecificClient();  
+    const { id } = req.params;
+    const clients = await service.GetInvoiceOfSpecificClient(id);  
     res.status(200).json({
       success: true,
       data: clients

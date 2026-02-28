@@ -1,4 +1,5 @@
 import db from '../../config/db.js'
+import { ExecuteQuery } from '../../utils/queryhandler.js';
 
 
 /*
@@ -20,8 +21,7 @@ export const GetAllProjects = async () => {
             JOIN Client c ON p.client_id = c.id
             JOIN User d ON p.director_id = d.id
             JOIN User m ON p.manager_id = m.id `;
-  const [rows] = await db.query(query);
-  return rows;
+  return ExecuteQuery(query);
 }
 
 
@@ -46,9 +46,7 @@ export const GetAllOngoingProjects = async () => {
             JOIN User d ON p.director_id = d.id
             JOIN User m ON p.manager_id = m.id
             WHERE p.status = 'Ongoing'; `;
-  const [rows] = await db.query(query);
-  return rows;
-   
+  return ExecuteQuery(query);   
 }
 
 /*
@@ -62,8 +60,7 @@ export const GetAllOngoingProjects = async () => {
     this query will be used in the admin dashboard at the budget overview option 
     while view ongoing budgets or all bidgets
 */
-export const GetProjectBudgetOverview = async () => {
-  const { id } = req.params;
+export const GetProjectBudgetOverview = async (id) => {
   const query = `
        SELECT
         p.id,
@@ -86,11 +83,8 @@ export const GetProjectBudgetOverview = async () => {
         pb.material_cost,
         pb.equipment_rent,
         pb.subcontractor_cost`;
-  const [rows] = await db.query(query);
-  return rows;}
-
-
-
+  return ExecuteQuery(query, id);
+}
 /*
   this query will provide tow things, 
 
@@ -115,13 +109,11 @@ export const GetOverviewOfAllProjects = async () => {
           pb.equipment_rent +
           pb.subcontractor_cost
         ) AS total_planned_budget,
-
         IFNULL(SUM(e.amount), 0) AS total_actual_expense
       FROM Project p
       JOIN Project_Budget pb ON p.budget_id = pb.id
       LEFT JOIN Expense e ON p.id = e.project_id
 
   `;
-  const [rows] = await db.query(query);
-  return rows;
+  return ExecuteQuery(query);
 }

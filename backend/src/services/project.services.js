@@ -9,8 +9,8 @@ export const GetAllOngoingProjects = async () => {
   return await repo.GetAllOngoingProjects();
 }
 
-export const GetProjectBudgetOverview = async () => {
-  return await repo.GetProjectBudgetOverview();
+export const GetProjectBudgetOverview = async (id) => {
+  return await repo.GetProjectBudgetOverview(id);
 }
 
 export const GetOverviewOfAllProjects = async () => {

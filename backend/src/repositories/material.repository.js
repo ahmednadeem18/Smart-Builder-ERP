@@ -1,5 +1,5 @@
 import db from '../../config/db.js'
-
+import { ExecuteQuery } from '../../utils/queryhandler.js';
 
 /* 
   this query will be used the show the 
@@ -18,8 +18,7 @@ export const GetCurrentAmountOfMaterial = async () => {
     LEFT JOIN Material_Inventory mi
     ON mc.id = mi.category_id
     GROUP BY mc.id;`;
-  const [rows] = await db.query(query);
-  return rows;
+  return await ExecuteQuery(query);
 }
 
 /* 
@@ -42,8 +41,8 @@ export const GetAllShipments = async () => {
     JOIN Material_Category mc
     ON ms.category_id = mc.id
     ORDER BY ms.id DESC;`;
-  const [rows] = await db.query(query);
-  return rows;
+  return await ExecuteQuery(query);
+
 }
 
 /*
@@ -51,8 +50,7 @@ export const GetAllShipments = async () => {
       admin dasboaard while viewing the projects
       project managers dashboard
 */
-export const GetSpecificShipment = async () => {
-  const { id } = req.params;
+export const GetSpecificShipment = async (id) => {
   const query = `
     SELECT 
     p.project_name,
@@ -65,6 +63,5 @@ export const GetSpecificShipment = async () => {
     JOIN Material_Category mc
     ON ma.category_id = mc.id
     WHERE p.id = ?;`;
-  const [rows] = await db.query(query);
-  return rows;
+  return await ExecuteQuery(query, [id]);
 }
