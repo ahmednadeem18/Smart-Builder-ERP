@@ -1,4 +1,3 @@
-import db from '../../config/db.js';
 import { HandleQuery } from '../../utils/queryhandler.js';
 
 /*
@@ -47,4 +46,78 @@ export const GetAllOngoingProjects = async (req, res) => {
             WHERE p.status = 'Ongoing'; `;
   return HandleQuery(res, query);
    
+}
+
+/*
+  this query will provide tow things, 
+
+      one is the actual budget of the specific project
+      other is the planned budget of the specific project
+      (total bugget consumed till now and remaining will be substraction of both quantities)
+    
+    
+    this query will be used in the admin dashboard at the budget overview option 
+    while view ongoing budgets or all bidgets
+*/
+export const GetProjectBudgetOverview = (res, req) => {
+  const { id } = req.params;
+  const query = `
+       SELECT
+        p.id,
+        p.project_name,
+        (
+          pb.labour_cost +
+          pb.material_cost +
+          pb.equipment_rent +
+          pb.subcontractor_cost
+        ) AS planned_budget,
+        IFNULL(SUM(e.amount), 0) AS actual_expense
+      FROM Project p
+      JOIN Project_Budget pb ON p.budget_id = pb.id
+      LEFT JOIN Expense e ON p.id = e.project_id
+      WHERE p.id = ?
+      GROUP BY 
+        p.id,
+        p.project_name,
+        pb.labour_cost,
+        pb.material_cost,
+        pb.equipment_rent,
+        pb.subcontractor_cost`;
+  return HandleQuery(res, query, [id]);
+}
+
+
+
+/*
+  this query will provide tow things, 
+
+      one is the total of actual budget of all projects
+      other is the total of planned budget of all projects
+      (total bugget consumed till now and remaining will be substraction of both quantities)
+    
+    
+    this query will be used in the admin dashboard at 
+    the budget overview option while view ongoing 
+    budgets or all bidgets
+*/
+export const GetOverviewOfAllProjects = (req, res) => {
+
+  const query = `
+    SELECT
+        COUNT(DISTINCT p.id) AS total_projects,
+
+        SUM(
+          pb.labour_cost +
+          pb.material_cost +
+          pb.equipment_rent +
+          pb.subcontractor_cost
+        ) AS total_planned_budget,
+
+        IFNULL(SUM(e.amount), 0) AS total_actual_expense
+      FROM Project p
+      JOIN Project_Budget pb ON p.budget_id = pb.id
+      LEFT JOIN Expense e ON p.id = e.project_id
+
+  `;
+  return HandleQuery(res, query);
 }

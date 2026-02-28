@@ -1,7 +1,7 @@
 
-export const HandleQuery = async(res, query, parameters = []) => {
+export const HandleQuery = async(res, query, params = []) => {
   try {
-    const [rows] = await db.query(query, parameters);
+    const [rows] = await db.query(query, params);
 
     res.status(200).json({
       success: true,
