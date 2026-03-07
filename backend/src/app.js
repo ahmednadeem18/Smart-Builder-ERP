@@ -1,11 +1,15 @@
 import express from "express";
 import cors from "cors";
 import { errorHandler } from "./middleware/ErrorHandler.js";
-import projectRoutes from "./routes/project.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
+import clientRoutes from "./routes/client.routes.js"
+import materialRoutes from "./routes/material.routes.js"
+
 
 const app = express();
 
 app.use(express.json());
+app.use(express.static("public"));
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -28,7 +32,11 @@ app.use(cors({
   credentials: true
 }));
 
-app.use("/api", projectRoutes);
+// app.use("/api", projectRoutes);
+app.use('/admin/clients', clientRoutes);
+app.use('/admin/materials', materialRoutes);
+app.use("/admin", adminRoutes);
 app.use(errorHandler);
+
 
 export default app;

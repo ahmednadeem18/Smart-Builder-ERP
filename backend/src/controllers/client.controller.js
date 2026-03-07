@@ -1,5 +1,5 @@
 import * as service 
-  from '../services/client.services'
+  from '../services/client.services.js'
 
 export const GetAllClients = async (req, res, next) => {
   try {

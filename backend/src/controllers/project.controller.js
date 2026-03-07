@@ -51,3 +51,11 @@ export const GetOverviewOfAllProjects = async (req, res, next) => {
 }
 
 
+export const GetDashboardOverview = async (req, res, next) => {
+  try {
+    const overview = await service.GetDashboardOverview();
+    res.status(200).json({ success: true, data: overview });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,4 +1,4 @@
-
+import db from "../config/db.js"; 
 
 export const ExecuteQuery = async (query, params = []) => {
   try {

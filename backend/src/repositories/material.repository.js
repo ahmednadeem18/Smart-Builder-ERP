@@ -65,3 +65,36 @@ export const GetSpecificShipment = async (id) => {
     WHERE p.id = ?;`;
   return await ExecuteQuery(query, [id]);
 }
+
+
+export const GetAllocationsByCategory = async (categoryId) => {
+  const query = `
+    SELECT 
+      p.project_name,
+      mc.name AS material,
+      ma.quantity
+    FROM Material_Allocation ma
+    JOIN Project p ON ma.project_id = p.id
+    JOIN Material_Category mc ON ma.category_id = mc.id
+    WHERE mc.id = ?;
+  `;
+  return await ExecuteQuery(query, [categoryId]);
+};
+
+/*
+  Get total allocated quantity of each material across projects
+  (helps dashboard to show usage summary)
+*/
+export const GetTotalAllocatedMaterial = async () => {
+  const query = `
+    SELECT 
+      mc.id,
+      mc.name,
+      mc.unit,
+      IFNULL(SUM(ma.quantity),0) AS total_allocated
+    FROM Material_Category mc
+    LEFT JOIN Material_Allocation ma ON mc.id = ma.category_id
+    GROUP BY mc.id;
+  `;
+  return await ExecuteQuery(query);
+};

@@ -117,3 +117,17 @@ export const GetOverviewOfAllProjects = async () => {
   `;
   return ExecuteQuery(query);
 }
+
+
+export const GetDashboardOverview = async () => {
+  const query = `
+    SELECT
+      (SELECT COUNT(*) FROM Project) AS total_projects,
+      (SELECT COUNT(*) FROM Project WHERE status='Ongoing') AS ongoing_projects,
+      (SELECT COUNT(*) FROM Project WHERE status='Completed') AS completed_projects,
+      (SELECT COUNT(*) FROM Client) AS total_clients
+  `;
+
+  const [rows] = await db.query(query);
+  return rows[0];
+};

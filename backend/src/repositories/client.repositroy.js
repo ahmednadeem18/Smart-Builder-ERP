@@ -54,7 +54,6 @@ export const GetSpecificClient = async (id) => {
 */
 export const GetProjectsOfSpecificClient = async (id) => {
 
-  const { id } = req.params;
   const query = `
       SELECT
       id,
@@ -74,7 +73,6 @@ export const GetProjectsOfSpecificClient = async (id) => {
 */
 export const GetPaymentsOfSpecificClient = async (id) => {
 
-  const { id } = req.params;
   const query = `
       SELECT
       p.project_name,
@@ -94,7 +92,6 @@ export const GetPaymentsOfSpecificClient = async (id) => {
 */
 export const GetInvoiceOfSpecificClient = async (id) => {
 
-  const { id } = req.params;
   const query = `
       SELECT
       p.project_name,

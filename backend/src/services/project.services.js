@@ -16,3 +16,7 @@ export const GetProjectBudgetOverview = async (id) => {
 export const GetOverviewOfAllProjects = async () => {
   return await repo.GetOverviewOfAllProjects();
 }
+
+export const GetDashboardOverview = async () => {
+  return await repo.GetDashboardOverview();
+};
