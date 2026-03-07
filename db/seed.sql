@@ -273,3 +273,15 @@ INSERT INTO HR_Allocation (hr_id, project_id, request_id, start_date, end_date) 
 (5,5,5,'2025-02-20','2025-08-20');
 
 
+select * FROM Project;
+
+SELECT
+    c.id,
+    c.name,
+    c.phone_number,
+    ad.bank_name,
+    ad.holder_name
+    FROM Client c
+    LEFT JOIN Account_Details ad
+    ON c.account_id = ad.id;
+  

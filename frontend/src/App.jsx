@@ -1,9 +1,13 @@
-import Projects from "./pages/projectview";
+import React from "react";
+import ProjectOverview from "./pages/projectview";
+import ClientTest from "./pages/projectview";
 
 function App() {
   return (
     <div>
-      <Projects />
+      <h1>Admin Dashboard</h1>
+      {/* <ProjectOverview /> */}
+      <ClientTest/>
     </div>
   );
 }
