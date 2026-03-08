@@ -4,7 +4,7 @@ import { errorHandler } from "./middleware/ErrorHandler.js";
 import adminRoutes from "./routes/admin.routes.js";
 import clientRoutes from "./routes/client.routes.js"
 import materialRoutes from "./routes/material.routes.js"
-
+import equipmentRoutes from './routes/equipment.routes.js';
 
 const app = express();
 
@@ -37,6 +37,6 @@ app.use('/admin/clients', clientRoutes);
 app.use('/admin/materials', materialRoutes);
 app.use("/admin", adminRoutes);
 app.use(errorHandler);
-
+app.use('/api/equipment', equipmentRoutes);
 
 export default app;
