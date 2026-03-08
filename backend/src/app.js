@@ -38,5 +38,5 @@ app.use('/admin/materials', materialRoutes);
 app.use("/admin", adminRoutes);
 app.use(errorHandler);
 app.use('/api/equipment', equipmentRoutes);
-
+app.use('/api/material', materialRoutes);
 export default app;

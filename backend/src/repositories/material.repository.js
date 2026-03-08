@@ -5,10 +5,10 @@ import { ExecuteQuery } from '../../utils/queryhandler.js';
 
 export const GetCurrentAmountOfMaterial = async () => {
   const query = `
-    SELECT mc.id, mc.name, mc.unit, IFNULL(SUM(mi.quantity),0) AS total_stock
+    SELECT mc.id, mc.name, mc.unit, IFNULL(SUM(mi.quantity), 0) AS total_stock
     FROM Material_Category mc
     LEFT JOIN Material_Inventory mi ON mc.id = mi.category_id
-    GROUP BY mc.id;`;
+    GROUP BY mc.id;`; // Saari shipment-wise rows ka total
   return await ExecuteQuery(query);
 }
 
@@ -29,23 +29,35 @@ export const GetAllShipments = async () => {
  * Triggers in DB will automatically update Material_Inventory.
  */
 export const AddMaterialShipment = async (categoryId, supplierId, quantity, price) => {
-  const query = `
-    INSERT INTO Material_Shipment (category_id, supplier_id, quantity, price, payment_status, date)
-    VALUES (?, ?, ?, ?, 'Pending', CURDATE());`;
-  return await ExecuteQuery(query, [categoryId, supplierId, quantity, price]);
-};
+  // 1. Shipment insert karein
+  const shipmentQuery = `
+    INSERT INTO Material_Shipment (category_id, supplier_id, quantity, price, payment_status)
+    VALUES (?, ?, ?, ?, 'Pending');`;
+  const result = await ExecuteQuery(shipmentQuery, [categoryId, supplierId, quantity, price]);
+  const newShipmentId = result.insertId;
 
+  // 2. Manual Inventory Insert (Trigger ka kaam yahan khud karein)
+  const inventoryQuery = `
+    INSERT INTO Material_Inventory (category_id, shipment_id, quantity) 
+    VALUES (?, ?, ?);`;
+  await ExecuteQuery(inventoryQuery, [categoryId, newShipmentId, quantity]);
+
+  return result;
+};
 /**
  * 2. Allocate Material: Moves stock to the project.
  * Triggers in DB will automatically subtract from Material_Inventory.
  */
+// material.repository.js - Line 55
+// material.repository.js - Line 56
+// material.repository.js
 export const CreateMaterialAllocation = async (projectId, categoryId, requestId, quantity) => {
   const query = `
     INSERT INTO Material_Allocation (project_id, category_id, request_id, quantity)
-    VALUES (?, ?, ?, ?);`;
+    VALUES (?, ?, ?, ?);`; // user_id yahan se hata diya
+  
   return await ExecuteQuery(query, [projectId, categoryId, requestId, quantity]);
 };
-
 /**
  * 3. Update Request Status: Marks the PM's request as handled.
  */
@@ -65,18 +77,23 @@ export const GetSupplierAccount = async (supplierId) => {
 /**
  * 5. Finance Helper: Create the actual payment request for the Finance Manager.
  */
-export const CreatePaymentRequest = async (projectId, categoryId, accountId, amount) => {
-  const query = `
-    INSERT INTO Payment_Request (project_id, category_id, account_id, amount, status, date)
-    VALUES (?, ?, ?, ?, 'Requested', CURDATE());`;
-  return await ExecuteQuery(query, [projectId, categoryId, accountId, amount]);
-};
+// material.repository.js - Line 82
+export const CreatePaymentRequest = async (projectId, categoryId, receiverId, userId, amount) => {
+  // 1. Console mein check karein koi value 'undefined' to nahi
+  console.log("PAYMENT DATA:", { projectId, categoryId, receiverId, userId, amount });
 
+  // 2. Query mein 'NOW()' ki jagah current date string bhej kar dekhein
+  const query = `
+    INSERT INTO Payment_Request (project_id, category_id, receiver_id, user_id, amount, status, date)
+    VALUES (?, ?, ?, ?, ?, 'Requested', CURDATE());`;
+  
+  return await ExecuteQuery(query, [projectId, categoryId, receiverId, userId, amount]);
+};
 /**
  * 6. Category Helper: Get the ID for 'Material' in Expense_Category table.
  */
 export const GetMaterialExpenseCategoryId = async () => {
-  const query = `SELECT id FROM Expense_Category WHERE name = 'Material';`;
+  const query = `SELECT id FROM Expense_Category WHERE name = 'material';`;
   const result = await ExecuteQuery(query);
   return result[0]?.id;
 };
