@@ -119,6 +119,35 @@ export const GetOverviewOfAllProjects = async () => {
 }
 
 
+/*
+  Create new project
+*/
+export const CreateProject = async (
+  project_name,
+  director_id,
+  manager_id,
+  budget_id,
+  client_id,
+  start_date
+) => {
+
+  const query = `
+    INSERT INTO Project
+    (project_name, director_id, manager_id, budget_id, client_id, start_date, status)
+    VALUES (?, ?, ?, ?, ?, ?, 'Ongoing')
+  `;
+
+  return await ExecuteQuery(query, [
+    project_name,
+    director_id,
+    manager_id,
+    budget_id,
+    client_id,
+    start_date
+  ]);
+};
+
+
 export const GetDashboardOverview = async () => {
   const query = `
     SELECT
@@ -130,4 +159,27 @@ export const GetDashboardOverview = async () => {
 
   const [rows] = await db.query(query);
   return rows[0];
+};
+
+// helper queries
+
+export const CheckClientExists = async (client_id) => {
+
+  const query = `SELECT id FROM Client WHERE id=?`;
+  return await ExecuteQuery(query, [client_id]);
+
+};
+
+export const CheckManagerExists = async (manager_id) => {
+
+  const query = `SELECT id FROM Employee WHERE id=? AND role='Project Manager'`;
+  return await ExecuteQuery(query, [manager_id]);
+
+};
+
+export const CheckBudgetExists = async (budget_id) => {
+
+  const query = `SELECT id FROM Budget WHERE id=?`;
+  return await ExecuteQuery(query, [budget_id]);
+
 };

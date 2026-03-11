@@ -59,3 +59,17 @@ export const GetDashboardOverview = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const CreateProject = async (req, res, next) => {
+  try {
+    const result = await service.CreateProject(req.body);
+    res.status(201).json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
