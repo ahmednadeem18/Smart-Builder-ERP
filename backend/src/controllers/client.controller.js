@@ -64,3 +64,17 @@ export const GetInvoiceOfSpecificClient = async (req, res, next) => {
     next(error);
   }
 }
+
+
+export const CreateClient = async (req, res, next) => {
+  try {
+    const result = await service.CreateClient(req.body);
+    res.status(201).json({
+      success: true,
+      message: "Client created successfully",
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};

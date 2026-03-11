@@ -104,3 +104,12 @@ export const GetInvoiceOfSpecificClient = async (id) => {
   return await ExecuteQuery(query, [id]);
 }
 
+export const CreateClient = async (name, phone_number, account_id) => {
+
+  const query = `
+    INSERT INTO Client
+    (name, phone_number, account_id)
+    VALUES (?, ?, ?)
+  `;
+  return await ExecuteQuery(query, [name, phone_number, account_id]);
+};
