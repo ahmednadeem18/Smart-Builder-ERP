@@ -54,8 +54,6 @@ export const GetDashboardOverview = async () => {
   return data;
 };
 
-import * as repo from "../repositories/project.repository.js";
-
 export const CreateProject = async (body) => {
 
   const {

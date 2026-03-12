@@ -6,6 +6,7 @@ export const GetAllProjects = async (req, res, next) => {
     const projects = await service.GetAllProjects();  
     res.status(200).json({
       success: true,
+      message: "projects retrieved successfully",
       data: projects
     });
   } catch (error) {
@@ -18,6 +19,7 @@ export const GetAllOngoingProjects = async (req, res, next) => {
     const projects = await service.GetAllOngoingProjects();  
     res.status(200).json({
       success: true,
+      message: "ongoing projects retrieved successfully",
       data: projects
     });
   } catch (error) {
@@ -31,6 +33,7 @@ export const GetProjectBudgetOverview = async (req, res, next) => {
     const projects = await service.GetProjectBudgetOverview(id);  
     res.status(200).json({
       success: true,
+      message: "project budget overview retrieved successfully",
       data: projects
     });
   } catch (error) {
@@ -43,6 +46,7 @@ export const GetOverviewOfAllProjects = async (req, res, next) => {
     const projects = await service.GetOverviewOfAllProjects();  
     res.status(200).json({
       success: true,
+      message: "overview of all projects retrieved successfully",
       data: projects
     });
   } catch (error) {
@@ -54,7 +58,11 @@ export const GetOverviewOfAllProjects = async (req, res, next) => {
 export const GetDashboardOverview = async (req, res, next) => {
   try {
     const overview = await service.GetDashboardOverview();
-    res.status(200).json({ success: true, data: overview });
+    res.status(200).json({
+      success: true,
+      message: "dashboard overview retrieved successfully",
+      data: overview
+    });
   } catch (error) {
     next(error);
   }
@@ -66,6 +74,7 @@ export const CreateProject = async (req, res, next) => {
     const result = await service.CreateProject(req.body);
     res.status(201).json({
       success: true,
+      message: "project created successfully",
       data: result
     });
 

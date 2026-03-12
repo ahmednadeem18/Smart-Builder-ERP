@@ -6,6 +6,7 @@ export const GetAllClients = async (req, res, next) => {
     const clients = await service.GetAllClients();  
     res.status(200).json({
       success: true,
+      message: "clients retrieved successfully",
       data: clients
     });
   } catch (error) {
@@ -19,6 +20,7 @@ export const GetSpecificClient = async (req, res, next) => {
     const clients = await service.GetSpecificClient(id);  
     res.status(200).json({
       success: true,
+      message: "client retrieved successfully",
       data: clients
     });
   } catch (error) {
@@ -32,6 +34,7 @@ export const GetProjectsOfSpecificClient = async (req, res, next) => {
     const clients = await service.GetProjectsOfSpecificClient(id);  
     res.status(200).json({
       success: true,
+      message: "projects retrieved successfully",
       data: clients
     });
   } catch (error) {
@@ -45,6 +48,7 @@ export const GetPaymentsOfSpecificClient = async (req, res, next) => {
     const clients = await service.GetPaymentsOfSpecificClient(id);  
     res.status(200).json({
       success: true,
+      message: "payments retrieved successfully",
       data: clients
     });
   } catch (error) {
@@ -58,6 +62,7 @@ export const GetInvoiceOfSpecificClient = async (req, res, next) => {
     const clients = await service.GetInvoiceOfSpecificClient(id);  
     res.status(200).json({
       success: true,
+      message: "invoice retrieved successfully",
       data: clients
     });
   } catch (error) {

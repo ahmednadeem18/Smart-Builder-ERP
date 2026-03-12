@@ -6,6 +6,7 @@ export const GetAllHumanResources = async (req, res, next) => {
     const projects = await service.GetAllHumanResources();  
     res.status(200).json({
       success: true,
+      message: "human resources retrieved successfully",
       data: projects
     });
   } catch (error) {

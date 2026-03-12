@@ -5,14 +5,22 @@ import * as service from '../services/material.services.js';
 export const GetCurrentAmountOfMaterial = async (req, res, next) => {
   try {
     const projects = await service.GetCurrentAmountOfMaterial();  
-    res.status(200).json({ success: true, data: projects });
+    res.status(200).json({
+      success: true,
+      message: "current material amount retrieved successfully",
+      data: projects
+    });
   } catch (error) { next(error); }
 }
 
 export const GetAllShipments = async (req, res, next) => {
   try {
     const projects = await service.GetAllShipments();  
-    res.status(200).json({ success: true, data: projects });
+    res.status(200).json({
+      success: true,
+      message: "shipments retrieved successfully",
+      data: projects
+    });
   } catch (error) { next(error); }
 }
 
@@ -20,7 +28,11 @@ export const GetSpecificShipment = async (req, res, next) => {
   try {
     const { id } = req.params;
     const projects = await service.GetSpecificShipment(id);  
-    res.status(200).json({ success: true, data: projects });
+    res.status(200).json({
+      success: true,
+      message: "shipment retrieved successfully",
+      data: projects
+    });
   } catch (error) { next(error); }
 }
 
@@ -28,28 +40,44 @@ export const GetAllocationsByCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
     const projects = await service.GetAllocationsByCategory(id);  
-    res.status(200).json({ success: true, data: projects });
+    res.status(200).json({
+      success: true,
+      message: "allocations retrieved successfully",
+      data: projects
+    });
   } catch (error) { next(error); }
 }
 
 export const GetTotalAllocatedMaterial = async (req, res, next) => {
   try {
     const projects = await service.GetTotalAllocatedMaterial();  
-    res.status(200).json({ success: true, data: projects });
+    res.status(200).json({
+      success: true,
+      message: "total allocated material retrieved successfully",
+      data: projects
+    });
   } catch (error) { next(error); }
 }
 
 export const GetPendingRequests = async (req, res, next) => {
   try {
-    const data = await service.GetPendingRequests();
-    res.status(200).json({ success: true, data });
+    const dat = await service.GetPendingRequests();
+    res.status(200).json({
+      success: true,
+      message: "pending requests retrieved successfully",
+      data: dat
+    });
   } catch (error) { next(error); }
 };
 
 export const GetSuppliers = async (req, res, next) => {
   try {
-    const data = await service.GetAllSuppliers();
-    res.status(200).json({ success: true, data });
+    const dat = await service.GetAllSuppliers();
+    res.status(200).json({
+      success: true,
+      message: "suppliers retrieved successfully",
+      data: dat
+    });
   } catch (error) { next(error); }
 };
 

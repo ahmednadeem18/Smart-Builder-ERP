@@ -3,7 +3,11 @@ import * as service from '../services/equipment.services.js';
 export const GetAllEquipments = async (req, res, next) => {
   try {
     const data = await service.GetAllEquipments();  
-    res.status(200).json({ success: true, data: data });
+    res.status(200).json({
+      success: true,
+      message: "equipments retrieved successfully",
+      data: data
+    });
   } catch (error) {
     next(error);
   }
@@ -12,7 +16,11 @@ export const GetAllEquipments = async (req, res, next) => {
 export const GetAllRentedEquipments = async (req, res, next) => {
   try {
     const data = await service.GetAllRentedEquipments();  
-    res.status(200).json({ success: true, data: data });
+    res.status(200).json({
+      success: true,
+      message: "rented equipments retrieved successfully",
+      data: data
+    });
   } catch (error) {
     next(error);
   }
@@ -21,7 +29,11 @@ export const GetAllRentedEquipments = async (req, res, next) => {
 export const GetOwnedEquipments = async (req, res, next) => {
   try {
     const data = await service.GetOwnedEquipments();  
-    res.status(200).json({ success: true, data: data });
+    res.status(200).json({
+      success: true,
+      message: "owned equipments retrieved successfully",
+      data: data
+    });
   } catch (error) {
     next(error);
   }
@@ -33,7 +45,11 @@ export const GetOwnedEquipments = async (req, res, next) => {
 export const GetPendingRequests = async (req, res, next) => {
   try {
     const data = await service.GetPendingRequests();
-    res.status(200).json({ success: true, data: data });
+    res.status(200).json({
+      success: true,
+      message: "pending requests retrieved successfully",
+      data: data
+    });
   } catch (error) {
     next(error);
   }

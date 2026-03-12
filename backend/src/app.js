@@ -5,8 +5,12 @@ import adminRoutes from "./routes/admin.routes.js";
 import clientRoutes from "./routes/client.routes.js"
 import materialRoutes from "./routes/material.routes.js"
 import equipmentRoutes from './routes/equipment.routes.js';
+import authRoutes from "./routes/auth.routes.js";
+import dotenv from 'dotenv';
+
 
 const app = express();
+dotenv.config();
 
 app.use(express.json());
 app.use(express.static("public"));
@@ -33,10 +37,13 @@ app.use(cors({
 }));
 
 // app.use("/api", projectRoutes);
-app.use('/admin/clients', clientRoutes);
-app.use('/admin/materials', materialRoutes);
-app.use("/admin", adminRoutes);
+app.use('/api/v1/admin/clients', clientRoutes);
+app.use('/api/v1/admin/materials', materialRoutes);
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use('/api/v1/equipment', equipmentRoutes);
+app.use('/api/v1/material', materialRoutes);
+
 app.use(errorHandler);
-app.use('/api/equipment', equipmentRoutes);
-app.use('/api/material', materialRoutes);
+
 export default app;
