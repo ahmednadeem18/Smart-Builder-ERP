@@ -18,3 +18,16 @@ export const GetUserForLogin = async (username, password) => {
   return result[0];
 };
 
+export const ChangePassword = async (userId, oldPassword, newPassword) => {
+
+  const query = `
+    UPDATE User
+    SET password = SHA2(?,256)
+    WHERE id = ?
+    AND password = SHA2(?,256)
+  `;
+
+  const result = await ExecuteQuery(query, [newPassword, userId, oldPassword]);
+
+  return result;
+};

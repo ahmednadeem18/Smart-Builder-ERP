@@ -1,6 +1,8 @@
 import * as repo from "../repositories/auth.repository.js";
 import jwt from "jsonwebtoken";
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
 export const LoginUser = async (username, password) => {
   const user = await repo.GetUserForLogin(username, password);
   if (!user) {
@@ -14,4 +16,21 @@ export const LoginUser = async (username, password) => {
   );
 
   return { user, token };
+};
+
+export const ChangePassword = async (userId, oldPassword, newPassword) => {
+
+  if (!passwordRegex.test(newPassword)) {
+    throw new Error(
+      "Password must be 8+ chars with uppercase, lowercase, number and special character"
+    );
+  }
+
+  const result = await repo.ChangePassword(userId, oldPassword, newPassword);
+
+  if (result.affectedRows === 0) {
+    throw new Error("Old password incorrect");
+  }
+
+  return { message: "Password updated successfully" };
 };
