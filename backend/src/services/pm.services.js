@@ -1,4 +1,4 @@
-import * as repo from '../repositories/projectManager.repository.js';
+import * as repo from '../repositories/pm.repository.js';
 
 /*Fetches all projects assigned to a specific PM.
  */
