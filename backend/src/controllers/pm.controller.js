@@ -1,4 +1,4 @@
-import * as service from '../services/projectManager.service.js';
+import * as service from '../services/pm.service.js';
 
 /*Fetches all projects assigned to the logged-in PM.
  */
