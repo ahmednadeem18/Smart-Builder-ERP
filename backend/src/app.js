@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.routes.js";
 import dotenv from 'dotenv';
 import financeRoutes from "./routes/finance.routes.js";
 import subcontractorRoutes from "./routes/subcontractor.routes.js";
+import pmRoutes from "./routes/pm.routes.js";
 const app = express();
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use('/api/v1/equipment', equipmentRoutes);
 app.use('/api/v1/material', materialRoutes);
 app.use('/api/v1/admin/finance', financeRoutes);
 app.use('/api/v1/subcontractor', subcontractorRoutes);
+app.use('/api/v1/pm', pmRoutes);
 app.use(errorHandler);
 
 export default app;
