@@ -29,6 +29,6 @@ router.post('/invoice/approve/:id', controller.ApproveInvoiceRequest);
 /** * @route POST /api/finance/decline 
  * Body: { id, type }
  */
-router.post('/decline', controller.DeclineRequest);
+// router.post('/decline', controller.DeclineRequest);
 
 export default router;

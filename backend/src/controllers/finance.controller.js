@@ -1,4 +1,4 @@
-import * as service from '../services/finance.service.js';
+import * as service from '../services/finance.services.js';
 
 export const GetAllExpenses = async (req, res, next) => {
   try {

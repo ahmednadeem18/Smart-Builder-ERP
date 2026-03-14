@@ -66,22 +66,22 @@ export const CreateProject = async (body) => {
   } = body;
 
   if (!project_name) {
-    throw new Error("Project name is required");
+    throw new Error("Project name is required!");
   }
 
   const client = await repo.CheckClientExists(client_id);
   if (client.length === 0) {
-    throw new Error("Client does not exist");
+    throw new Error("Client does not exist!");
   }
 
   const manager = await repo.CheckManagerExists(manager_id);
   if (manager.length === 0) {
-    throw new Error("Project manager not found");
+    throw new Error("Project manager not found!");
   }
 
   const budget = await repo.CheckBudgetExists(budget_id);
   if (budget.length === 0) {
-    throw new Error("Budget does not exist");
+    throw new Error("Budget does not exist!");
   }
 
   return await repo.CreateProject(
@@ -92,4 +92,21 @@ export const CreateProject = async (body) => {
     client_id,
     start_date
   );
+};
+
+
+const allowedStatus = ["Cancelled", "Ongoing", "Completed"];
+
+export const UpdateProjectStatus = async (projectId, status) => {
+
+  if (!allowedStatus.includes(status)) {
+    throw new Error("Invalid project status!");
+  }
+
+  const result = await repo.UpdateProjectStatus(projectId, status);
+
+  if (result.affectedRows === 0) {
+    throw new Error("Project not found!");
+  }
+  return { message: "Project status updated successfully!" };
 };

@@ -82,3 +82,22 @@ export const CreateProject = async (req, res, next) => {
     next(error);
   }
 };
+
+export const UpdateProjectStatus = async (req, res, next) => {
+
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const result = await service.UpdateProjectStatus(id, status);
+
+    res.json({
+      success: true,
+      data: result,
+      message: "Project status updated successfully!"
+    });
+
+  } catch (error) {
+    next(error);
+  }
+
+};

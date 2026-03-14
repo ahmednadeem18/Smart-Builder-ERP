@@ -147,6 +147,15 @@ export const CreateProject = async (
   ]);
 };
 
+export const UpdateProjectStatus = async (projectId, status) => {
+
+  const query = `
+    UPDATE Project
+    SET status = ?
+    WHERE id = ?`;
+  return await ExecuteQuery(query, [status, projectId]);
+};
+
 
 export const GetDashboardOverview = async () => {
   const query = `
@@ -160,6 +169,7 @@ export const GetDashboardOverview = async () => {
   const [rows] = await db.query(query);
   return rows[0];
 };
+
 
 // helper queries
 

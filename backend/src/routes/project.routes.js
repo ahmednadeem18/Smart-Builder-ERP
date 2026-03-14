@@ -1,8 +1,4 @@
-// import express from "express";
-// import { GetAllProjects } from "../controllers/project.controller.js";
+import { UpdateProjectStatus } from "../controllers/project.controller.js";
+import { VerifyToken } from "../middleware/auth.middleware.js";
 
-// const router = express.Router();
-
-// router.get("/projects", GetAllProjects);
-
-// export default router;
+router.patch("/projects/:id/status", VerifyToken, UpdateProjectStatus);
