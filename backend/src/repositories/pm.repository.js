@@ -21,6 +21,7 @@ export const GetProjectLogs = async (projectId) => {
   return ExecuteQuery(query, [projectId]);
 };
 
+
 /* Requests Materials from the Material Manager.
 */
 export const RequestMaterials = async (projectId, categoryId, userId, quantity) => {

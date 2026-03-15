@@ -1,7 +1,12 @@
 import express from 'express';
 import * as controller from '../controllers/finance.controller.js';
+import { verifyToken } from '../middleware/auth.middleware.js';
+import { allowRoles } from '../middleware/rbac.middleware.js';
 
 const router = express.Router();
+
+router.use(verifyToken);
+router.use(allowRoles("Finance Manager"));
 
 /** @route GET /api/finance/expenses */
 router.get('/expenses', controller.GetAllExpenses);

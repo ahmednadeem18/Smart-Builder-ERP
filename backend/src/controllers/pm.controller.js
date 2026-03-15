@@ -4,8 +4,9 @@ import * as service from '../services/pm.services.js';
  */
 export const GetMyProjects = async (req, res, next) => {
   try {
-    const { managerId } = req.params;
+    const managerId = req.user.id;
     const projects = await service.GetMyProjects(managerId);
+    //console.log("Projects retrieved for managerId:", managerId, projects);
     res.status(200).json({
       success: true,
       message: "Assigned projects retrieved successfully",
@@ -13,6 +14,7 @@ export const GetMyProjects = async (req, res, next) => {
     });
   } catch (error) { next(error); }
 };
+
 
 /* Retrieves the log history for a specific project.
  */

@@ -6,6 +6,7 @@ export const GetMyProjects = async (managerId) => {
   return await repo.GetAssignedProjects(managerId);
 };
 
+
 /*Retrieves the timeline/history of logs for a project.
  */
 export const GetProjectHistory = async (projectId) => {
