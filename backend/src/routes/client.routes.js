@@ -1,12 +1,14 @@
 import express from 'express';
 import * as c from '../controllers/client.controller.js';
+import { verifyToken } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get('/', c.GetAllClients);
-router.get('/:id', c.GetSpecificClient);
-router.get('/:id/projects', c.GetProjectsOfSpecificClient); 
-router.get('/:id/payments', c.GetPaymentsOfSpecificClient);
-router.get('/:id/invoices', c.GetInvoiceOfSpecificClient);
 
+router.get('/', verifyToken, c.GetAllClients);
+router.get('/:id', verifyToken, c.GetSpecificClient);
+router.get('/:id/projects', verifyToken, c.GetProjectsOfSpecificClient); 
+router.get('/:id/payments', verifyToken, c.GetPaymentsOfSpecificClient);
+router.get('/:id/invoices', verifyToken, c.GetInvoiceOfSpecificClient);
+router.post('/', verifyToken, c.CreateClient);
 export default router;

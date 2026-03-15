@@ -121,32 +121,74 @@ export const GetOverviewOfAllProjects = async () => {
 
 /*
   Create new project
-*/
-export const CreateProject = async (
+*/export const CreateProjectWithBudget = async (
   project_name,
   director_id,
   manager_id,
-  budget_id,
   client_id,
-  start_date
+  start_date,
+  labour_cost,
+  material_cost,
+  equipment_rent,
+  subcontractor_cost
 ) => {
 
-  const query = `
-    INSERT INTO Project
-    (project_name, director_id, manager_id, budget_id, client_id, start_date, status)
-    VALUES (?, ?, ?, ?, ?, ?, 'Ongoing')
-  `;
+  const conn = await db.getConnection();
 
-  return await ExecuteQuery(query, [
-    project_name,
-    director_id,
-    manager_id,
-    budget_id,
-    client_id,
-    start_date
-  ]);
+  try {
+
+    await conn.beginTransaction();
+
+    const budgetQuery = `
+      INSERT INTO Project_Budget
+      (labour_cost, material_cost, equipment_rent, subcontractor_cost)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    const [budgetResult] = await conn.query(budgetQuery, [
+      labour_cost,
+      material_cost,
+      equipment_rent,
+      subcontractor_cost
+    ]);
+
+    const budget_id = budgetResult.insertId;
+
+    const projectQuery = `
+      INSERT INTO Project
+      (project_name, director_id, manager_id, budget_id, client_id, start_date, status)
+      VALUES (?, ?, ?, ?, ?, ?, 'Ongoing')
+    `;
+
+    await conn.query(projectQuery, [
+      project_name,
+      director_id,
+      manager_id,
+      budget_id,
+      client_id,
+      start_date
+    ]);
+
+    await conn.commit();
+
+    return {
+      success: true,
+      budget_id
+    };
+
+  } catch (error) {
+
+    await conn.rollback();
+
+    throw error;
+
+  } finally {
+
+    conn.release();
+
+  }
+
 };
-
 export const UpdateProjectStatus = async (projectId, status) => {
 
   const query = `
@@ -182,14 +224,20 @@ export const CheckClientExists = async (client_id) => {
 
 export const CheckManagerExists = async (manager_id) => {
 
-  const query = `SELECT id FROM Employee WHERE id=? AND role='Project Manager'`;
+  const query = `
+      SELECT u.id
+      FROM User u
+      JOIN User_Role ur ON ur.user_id = u.id
+      JOIN Role r ON r.id = ur.role_id
+      WHERE u.id = ?
+      AND r.name = 'Project Manager'`;
   return await ExecuteQuery(query, [manager_id]);
 
 };
 
 export const CheckBudgetExists = async (budget_id) => {
 
-  const query = `SELECT id FROM Budget WHERE id=?`;
+  const query = `SELECT id FROM Project_Budget WHERE id=?`;
   return await ExecuteQuery(query, [budget_id]);
 
 };

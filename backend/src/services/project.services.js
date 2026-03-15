@@ -110,3 +110,28 @@ export const UpdateProjectStatus = async (projectId, status) => {
   }
   return { message: "Project status updated successfully!" };
 };
+
+export const CreateProjectWithBudget = async (
+  project_name,
+  director_id,
+  manager_id,
+  client_id,
+  start_date,
+  labour_cost,
+  material_cost,
+  equipment_rent,
+  subcontractor_cost
+) => {
+
+  return await repo.CreateProjectWithBudget(
+    project_name,
+    director_id,
+    manager_id,
+    client_id,
+    start_date,
+    labour_cost,
+    material_cost,
+    equipment_rent,
+    subcontractor_cost
+  );
+};

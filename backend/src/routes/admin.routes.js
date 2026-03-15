@@ -3,7 +3,7 @@ import {
   GetAllProjects, 
   GetDashboardOverview,
   UpdateProjectStatus,
-  CreateProject
+  CreateProject,
 } from "../controllers/project.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
 

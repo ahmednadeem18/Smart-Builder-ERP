@@ -70,17 +70,43 @@ export const GetDashboardOverview = async (req, res, next) => {
 
 
 export const CreateProject = async (req, res, next) => {
+
   try {
-    const result = await service.CreateProject(req.body);
-    res.status(201).json({
+
+    const {
+      project_name,
+      director_id,
+      manager_id,
+      client_id,
+      start_date,
+      labour_cost,
+      material_cost,
+      equipment_rent,
+      subcontractor_cost
+    } = req.body;
+
+    const result = await service.CreateProjectWithBudget(
+      project_name,
+      director_id,
+      manager_id,
+      client_id,
+      start_date,
+      labour_cost,
+      material_cost,
+      equipment_rent,
+      subcontractor_cost
+    );
+
+    res.json({
       success: true,
-      message: "project created successfully",
-      data: result
+      message: "Project created successfully",
+      budget_id: result.budget_id
     });
 
   } catch (error) {
     next(error);
   }
+
 };
 
 export const UpdateProjectStatus = async (req, res, next) => {

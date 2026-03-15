@@ -48,6 +48,16 @@ export const CreateClient = async (body) => {
   if (!phone_number) {
     throw new Error("Phone number is required");
   }
+  if (!account_id || isNaN(account_id)) {
+    throw new Error("Valid account ID is required");
+  }
+  if (account_id < 0) {
+    throw new Error("Account ID cannot be negative");
+  }
+  if(account_id >= 1000000) {
+    throw new Error("Account ID is too large");
+  }
+
   return await repo.CreateClient(name, phone_number, account_id);
 };
 
