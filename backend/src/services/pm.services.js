@@ -16,7 +16,9 @@ export const GetProjectHistory = async (projectId) => {
  */
 export const AddProgressUpdate = async (projectId, logText) => {
   if (!logText || logText.trim().length < 10) {
-    throw new Error("Progress log is too short. Please provide more detail.");
+    const error = new Error("Progress log is too short. Please provide more detail.");
+    error.status = 400;
+    throw error;
   }
   return await repo.CreateProgressLog(projectId, logText);
 };
@@ -28,12 +30,18 @@ export const SubmitResourceRequest = async (type, data) => {
 
   // Validation: Ensure we have a project and a user
   if (!projectId || !userId) {
-    throw new Error("Missing Project ID or User ID for the request.");
+    const error = new Error("Missing Project ID or User ID for the request.");
+    error.status = 400;
+    throw error;
   }
 
   switch (type.toLowerCase()) {
     case 'material':
-      if (!quantity || quantity <= 0) throw new Error("Invalid material quantity.");
+      if (!quantity || quantity <= 0) {
+        const error = new Error("Invalid material quantity.");
+        error.status = 400;
+        throw error;
+      }
       return await repo.RequestMaterials(projectId, categoryId, userId, quantity);
 
     case 'hr':
@@ -46,6 +54,8 @@ export const SubmitResourceRequest = async (type, data) => {
       return await repo.RequestSubcontractor(projectId, categoryId, userId);
 
     default:
-      throw new Error(`Invalid resource type: ${type}`);
+      const error = new Error(`Invalid resource type: ${type}`);
+      error.status = 400;
+      throw error;
   }
 };

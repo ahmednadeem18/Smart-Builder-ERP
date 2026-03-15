@@ -189,15 +189,69 @@ export const GetOverviewOfAllProjects = async () => {
   }
 
 };
-export const UpdateProjectStatus = async (projectId, status) => {
 
-  const query = `
-    UPDATE Project
-    SET status = ?
-    WHERE id = ?`;
-  return await ExecuteQuery(query, [status, projectId]);
+export const UpdateProjectStatus = async (project_id, status) => {
+
+  const conn = await db.getConnection();
+
+  try {
+
+    await conn.beginTransaction();
+
+    await conn.query(
+      `UPDATE Project
+       SET status = ?
+       WHERE id = ?`,
+      [status, project_id]
+    );
+
+    if (status === "Completed") {
+
+      await conn.query(`
+        UPDATE Skilled_Labour
+        SET status = 'Free'
+        WHERE hr_id IN (
+          SELECT hr_id
+          FROM HR_Allocation
+          WHERE project_id = ?
+        )
+      `, [project_id]);
+
+      await conn.query(`
+        UPDATE Unskilled_Labour
+        SET status = 'Free'
+        WHERE hr_id IN (
+          SELECT hr_id
+          FROM HR_Allocation
+          WHERE project_id = ?
+        )
+      `, [project_id]);
+
+      await conn.query(`
+        UPDATE HR_Allocation
+        SET end_date = CURDATE()
+        WHERE project_id = ?
+        AND end_date IS NULL
+      `, [project_id]);
+
+    }
+
+    await conn.commit();
+
+    return { success: true };
+
+  } catch (error) {
+
+    await conn.rollback();
+    throw error;
+
+  } finally {
+
+    conn.release();
+
+  }
+
 };
-
 
 export const GetDashboardOverview = async () => {
   const query = `

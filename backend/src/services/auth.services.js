@@ -31,7 +31,9 @@ export const LoginUser = async (username, password) => {
   // --- BYPASS END ---
 
   if (!user) {
-    throw new Error("Invalid username or password");
+    const error = new Error("Invalid username or password");
+    error.status = 400;
+    throw error;
   }
 
   const token = jwt.sign(
@@ -45,15 +47,19 @@ export const LoginUser = async (username, password) => {
 export const ChangePassword = async (userId, oldPassword, newPassword) => {
 
   if (!passwordRegex.test(newPassword)) {
-    throw new Error(
+    const error = new Error(
       "Password must be 8+ chars with uppercase, lowercase, number and special character"
     );
+    error.status = 400;
+    throw error;
   }
 
   const result = await repo.ChangePassword(userId, oldPassword, newPassword);
 
   if (result.affectedRows === 0) {
-    throw new Error("Old password incorrect");
+    const error = new Error("Old password incorrect");
+    error.status = 400;
+    throw error;
   }
 
   return { message: "Password updated successfully" };

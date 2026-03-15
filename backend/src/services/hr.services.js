@@ -6,7 +6,9 @@ export const CreateHRRequest = async (data) => {
   const { projectId, categoryId, categoryType, quantity, userId } = data;
   
   if (!projectId || !categoryId || !categoryType || !quantity) {
-    throw new Error("Bhai, saari fields lazmi hain (Project, Category, Type, Quantity)!");
+    const error = new Error("Bhai, saari fields lazmi hain (Project, Category, Type, Quantity)!");
+    error.status = 400;
+    throw error;
   }
 
   const result = await repo.CreateHRAllocationRequest(projectId, categoryId, categoryType, quantity, userId);
@@ -30,7 +32,9 @@ export const ApproveHRRequest = async (data) => {
 
   // Check agar quantity poori nahi hai
   if (categoryType !== 'Engineer' && selectedWorkers.length < quantity) {
-    throw new Error(`Maazrat! Sirf ${selectedWorkers.length} bande free hain. Request poori nahi ho sakti.`);
+    const error = new Error(`Maazrat! Sirf ${selectedWorkers.length} bande free hain. Request poori nahi ho sakti.`);
+    error.status = 400;
+    throw error;
   }
 
   // 2. Dates aur Cost Calculate karna

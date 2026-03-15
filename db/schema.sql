@@ -535,6 +535,8 @@ BEGIN
 END //
 
 
+
+
 CREATE TRIGGER hash_user_password BEFORE INSERT ON User
 FOR EACH ROW
 BEGIN
@@ -551,8 +553,37 @@ BEGIN
 END;
 //
 
-DELIMITER ;
+CREATE TRIGGER release_workers_after_project_completion
+AFTER UPDATE ON Project
+FOR EACH ROW
+BEGIN
 
+  IF NEW.status = 'Completed' AND OLD.status <> 'Completed' THEN
+
+    UPDATE Skilled_Labour
+    SET status = 'Free'
+    WHERE hr_id IN (
+      SELECT hr_id
+      FROM HR_Allocation
+      WHERE project_id = NEW.id
+    );
+
+    UPDATE Unskilled_Labour
+    SET status = 'Free'
+    WHERE hr_id IN (
+      SELECT hr_id
+      FROM HR_Allocation
+      WHERE project_id = NEW.id
+    );
+
+    UPDATE HR_Allocation
+    SET end_date = CURDATE()
+    WHERE project_id = NEW.id
+    AND end_date IS NULL;
+
+  END IF;
+
+END //
 
 DELIMITER ;
 

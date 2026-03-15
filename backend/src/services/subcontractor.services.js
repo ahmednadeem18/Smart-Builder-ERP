@@ -26,7 +26,9 @@ export const ApproveSubcontractorAllocation = async (data) => {
     // 2. Subcontractor ki Account details nikalain
     const sub = await subRepo.GetSubcontractorAccount(subcontractorId);
     if (!sub || !sub.account_id) {
-        throw new Error("Subcontractor account details missing.");
+        const error = new Error("Subcontractor account details missing.");
+        error.status = 404;
+        throw error;
     }
 
     // 3. 'subcontractor' expense category ID nikalain

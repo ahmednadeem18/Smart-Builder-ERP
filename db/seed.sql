@@ -275,6 +275,7 @@ INSERT INTO HR_Allocation (hr_id, project_id, request_id, start_date, end_date) 
 
 select * FROM Project;
 
+
 SELECT
     c.id,
     c.name,
@@ -285,3 +286,18 @@ SELECT
     LEFT JOIN Account_Details ad
     ON c.account_id = ad.id;
   
+
+  SELECT u.id
+      FROM User u
+      JOIN User_Role ur ON ur.user_id = u.id
+      JOIN Role r ON r.id = ur.role_id
+      WHERE u.id = 2
+      AND r.name = 'Project Manager';
+
+DESCRIBE Project;
+
+DESCRIBE Project_Budget;
+
+SELECT * FROM Project_Budget;
+
+DESCRIBE Client;

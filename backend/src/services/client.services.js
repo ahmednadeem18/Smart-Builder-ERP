@@ -8,7 +8,9 @@ export const GetAllClients = async () => {
 export const GetSpecificClient = async (id) => {
 
   if (!id || isNaN(id)) {
-    throw new Error("Invalid client ID");
+    const error = new Error("Invalid client ID");
+    error.status = 400;
+    throw error;
   }
   return await repo.GetSpecificClient(id);
 }
@@ -16,7 +18,9 @@ export const GetSpecificClient = async (id) => {
 export const GetProjectsOfSpecificClient = async (id) => {
 
   if (!id || isNaN(id)) {
-    throw new Error("Invalid client ID");
+    const error = new Error("Invalid client ID");
+    error.status = 400;
+    throw error;
   }
   return await repo.GetProjectsOfSpecificClient(id);
 }
@@ -24,7 +28,9 @@ export const GetProjectsOfSpecificClient = async (id) => {
 export const GetPaymentsOfSpecificClient = async (id) => {
 
   if (!id || isNaN(id)) {
-    throw new Error("Invalid client ID");
+    const error = new Error("Invalid client ID");
+    error.status = 400;
+    throw error;
   }
   return await repo.GetPaymentsOfSpecificClient(id);
 }
@@ -32,7 +38,9 @@ export const GetPaymentsOfSpecificClient = async (id) => {
 export const GetInvoiceOfSpecificClient = async (id) => {
 
   if (!id || isNaN(id)) {
-    throw new Error("Invalid client ID");
+    const error = new Error("Invalid client ID");
+    error.status = 400;
+    throw error;
   }
   return await repo.GetInvoiceOfSpecificClient(id);
 }
@@ -42,20 +50,30 @@ export const CreateClient = async (body) => {
   const { name, phone_number, account_id } = body;
 
   if (!name) {
-    throw new Error("Client name is required");
+    const error = new Error("Client name is required");
+    error.status = 400;
+    throw error;
   }
 
   if (!phone_number) {
-    throw new Error("Phone number is required");
+    const error = new Error("Phone number is required");
+    error.status = 400;
+    throw error;
   }
   if (!account_id || isNaN(account_id)) {
-    throw new Error("Valid account ID is required");
+    const error = new Error("Valid account ID is required");
+    error.status = 400;
+    throw error;
   }
   if (account_id < 0) {
-    throw new Error("Account ID cannot be negative");
+    const error = new Error("Account ID cannot be negative");
+    error.status = 400;
+    throw error;
   }
   if(account_id >= 1000000) {
-    throw new Error("Account ID is too large");
+    const error = new Error("Account ID is too large");
+    error.status = 400;
+    throw error;
   }
 
   return await repo.CreateClient(name, phone_number, account_id);
@@ -64,7 +82,9 @@ export const CreateClient = async (body) => {
 
 export const GetClientFullProfile = async (id) => {
   if (!id || isNaN(id)) {
-    throw new Error("Invalid client ID");
+    const error = new Error("Invalid client ID");
+    error.status = 400;
+    throw error;
   }
 
   const clientInfo = await repo.GetSpecificClient(id);

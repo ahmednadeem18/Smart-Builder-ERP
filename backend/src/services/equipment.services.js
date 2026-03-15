@@ -22,7 +22,9 @@ export const ApproveEquipmentRequest = async (requestId, equipmentId, projectId,
   const selectedEquipment = allEquipments.find(e => e.id === equipmentId);
 
   if (!selectedEquipment || selectedEquipment.status !== 'Available') {
-    throw new Error('Equipment is not available for allocation.');
+    const error = new Error('Equipment is not available for allocation.');
+    error.status = 400;
+    throw error;
   }
 
   // 2. Create the Allocation (This triggers the DB status change to 'In-use')

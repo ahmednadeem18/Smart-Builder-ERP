@@ -39,11 +39,15 @@ export const ApprovePaymentRequest = async (requestId) => {
   const request = requestResult[0];
 
   if (!request) {
-    throw new Error("Payment Request not found.");
+    const error = new Error("Payment Request not found.");
+    error.status = 404;
+    throw error;
   }
 
   if (request.status === 'Approved') {
-    throw new Error("This payment has already been processed.");
+    const error = new Error("This payment has already been processed.");
+    error.status = 400;
+    throw error;
   }
 
   // 2. Create the Expense entry
@@ -71,7 +75,9 @@ export const ApproveInvoiceRequest = async (invoiceId) => {
   const invoice = invoiceResult.find(i => i.id === parseInt(invoiceId));
 
   if (!invoice) {
-    throw new Error("Invoice Request not found or already processed.");
+    const error = new Error("Invoice Request not found or already processed.");
+    error.status = 404;
+    throw error;
   }
 
   // 2. Create the Revenue entry

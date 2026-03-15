@@ -30,7 +30,9 @@ export const ApproveFromSpecificBatch = async (data) => {
   const batch = inventoryRows.find(b => b.inventory_id === inventoryId);
 
   if (!batch) {
-    throw new Error("Selected inventory batch not found or insufficient quantity!");
+    const error = new Error("Selected inventory batch not found or insufficient quantity!");
+    error.status = 404;
+    throw error;
   }
 
   const { supplier_id, unit_price } = batch;
@@ -51,7 +53,11 @@ export const ApproveFromSpecificBatch = async (data) => {
   const expId = await repo.GetMaterialExpenseCategoryId();
   const totalCost = requestedQty * unit_price;
 
-  if (!accountId) throw new Error("Supplier account missing!");
+  if (!accountId) {
+    const error = new Error("Supplier account missing!");
+    error.status = 404;
+    throw error;
+  }
 
   await repo.CreatePaymentRequest(projectId, expId, accountId, userId, totalCost);
 
@@ -88,7 +94,9 @@ export const CreateMaterialRequest = async (data) => {
 
   // 3. Validation Check (Yahan ghalti ho sakti hai)
   if (!projectId || !categoryId || !quantity) {
-    throw new Error("Missing required fields: projectId, categoryId, or quantity");
+    const error =  new Error("Missing required fields: projectId, categoryId, or quantity");
+    error.status = 400;
+    throw error;
   }
 
   const result = await repo.CreateMaterialAllocationRequest(projectId, categoryId, quantity, userId);
