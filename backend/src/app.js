@@ -11,8 +11,17 @@ import financeRoutes from "./routes/finance.routes.js";
 import subcontractorRoutes from "./routes/subcontractor.routes.js";
 import pmRoutes from "./routes/pm.routes.js";
 import hrRoutes from './routes/hr.routers.js';
+
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import path from 'path';
+
+const swaggerDoc = YAML.load(path.join(process.cwd(), 'docs/swagger.yaml'));
 const app = express();
 dotenv.config();
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
 
 app.use(express.json());
 app.use(express.static("public"));
