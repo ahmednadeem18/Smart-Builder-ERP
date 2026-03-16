@@ -11,7 +11,7 @@ export const GetUserForLogin = async (username, password) => {
     JOIN User_Role ur ON ur.user_id = u.id
     JOIN Role r ON r.id = ur.role_id
     WHERE u.username = ?
-    AND u.password = SHA2(?,256)`;
+    AND u.password = ?`;
 
   const result = await ExecuteQuery(query, [username, password]);
 
@@ -22,9 +22,9 @@ export const ChangePassword = async (userId, oldPassword, newPassword) => {
 
   const query = `
     UPDATE User
-    SET password = SHA2(?,256)
+    SET password = ?
     WHERE id = ?
-    AND password = SHA2(?,256)
+    AND password = ?
   `;
 
   const result = await ExecuteQuery(query, [newPassword, userId, oldPassword]);
