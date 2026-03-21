@@ -14,14 +14,16 @@ export const hashPassword = (password) => {
 export const LoginUser = async (username, password) => {
 
   const hashedPass = hashPassword(password);
-
   const user = await repo.GetUserForLogin(username, hashedPass);
-
+  // console.log("Hashed Old Password:", hashedPass);
+  // console.log("password from DB:", password); // Debugging log
   if (!user) {
+    console.log("Login failed for username:", username); // Debugging log
     const error = new Error("Invalid username or password");
     error.status = 400;
     throw error;
   }
+  // console.log("Hashed Old Password:", hashedPass); // Debugging log
 
   const token = jwt.sign(
     { id: user.id, username: user.username, role: user.role },
@@ -69,9 +71,7 @@ export const ChangePassword = async (userId, oldPassword, newPassword) => {
   }
 
   const hashedOldPassword = hashPassword(oldPassword);
-  const hashedNewPassword = hashPassword(newPassword);
-
-  const result = await repo.ChangePassword(userId, hashedOldPassword, hashedNewPassword);
+  const result = await repo.ChangePassword(userId, hashedOldPassword, newPassword);
 
   if (result.affectedRows === 0) {
     const error = new Error("Old password incorrect");

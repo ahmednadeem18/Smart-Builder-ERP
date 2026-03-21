@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Sab routes ke liye token zaroori hai
 router.use(verifyToken);
-router.use(allowRoles("HR Manager"));
+router.use(allowRoles("HR Manager", "Director"));
 
 router.get('/resources', controller.GetAllHumanResources);
 router.get('/requests/pending', controller.GetPendingRequests);

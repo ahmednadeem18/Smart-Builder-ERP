@@ -15,10 +15,10 @@ export const Login = async (req, res, next) => {
 
     // --- 🚀 TESTING BYPASS START ---
     // Agar Naveed login kar raha hai, toh password check skip karein
-    if (username === 'iman_material') {
-       const result = await service.LoginUser(username, password, true); // Humne 'true' bhej diya bypass ke liye
-       return res.status(200).json({ success: true, data: result });
-    }
+    // if (username === 'iman_material') {
+    //    const result = await service.LoginUser(username, password, true); // Humne 'true' bhej diya bypass ke liye
+    //    return res.status(200).json({ success: true, data: result });
+    // }
     // --- TESTING BYPASS END ---
 
     const result = await service.LoginUser(username, password);

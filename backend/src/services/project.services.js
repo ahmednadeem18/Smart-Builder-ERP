@@ -182,3 +182,30 @@ export const CreateProjectWithBudget = async (
     subcontractor_cost
   );
 };
+
+export const GetProjectFullReport = async (id) => {
+  if (!id || isNaN(id)) {
+    const error = new Error("Invalid project ID");
+    error.status = 400;
+    throw error;
+  }
+
+  const report = await repo.GetProjectFullReport(id);
+
+  if (!report.project || !report.project.id) {
+    const error = new Error("Project not found");
+    error.status = 404;
+    throw error;
+  }
+
+  return report;
+};
+
+export const GetUsersByRole = async (role) => {
+  if (!role) {
+    const error = new Error("Role is required");
+    error.status = 400;
+    throw error;
+  }
+  return await repo.GetUsersByRole(role);
+};

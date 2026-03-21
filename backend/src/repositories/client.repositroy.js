@@ -103,13 +103,17 @@ export const GetInvoiceOfSpecificClient = async (id) => {
       WHERE ir.client_id=?;`
   return await ExecuteQuery(query, [id]);
 }
-
 export const CreateClient = async (name, phone_number, account_id) => {
-
-  const query = `
-    INSERT INTO Client
-    (name, phone_number, account_id)
-    VALUES (?, ?, ?)
-  `;
-  return await ExecuteQuery(query, [name, phone_number, account_id]);
+  const [result] = await db.query(
+    `INSERT INTO Client (name, phone_number, account_id) VALUES (?, ?, ?)`,
+    [name, phone_number, account_id]
+  );
+  return result;
+};
+export const CreateAccount = async (IBAN, bank_name, holder_name) => {
+  const [result] = await db.query(
+    `INSERT INTO Account_Details (IBAN, bank_name, holder_name) VALUES (?, ?, ?)`,
+    [IBAN, bank_name, holder_name]
+  );
+  return result;
 };

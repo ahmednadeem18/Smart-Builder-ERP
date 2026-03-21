@@ -10,5 +10,6 @@ router.get('/:id', verifyToken, c.GetSpecificClient);
 router.get('/:id/projects', verifyToken, c.GetProjectsOfSpecificClient); 
 router.get('/:id/payments', verifyToken, c.GetPaymentsOfSpecificClient);
 router.get('/:id/invoices', verifyToken, c.GetInvoiceOfSpecificClient);
+router.post('/create', verifyToken, c.CreateClientWithAccount);
 router.post('/', verifyToken, c.CreateClient);
 export default router;

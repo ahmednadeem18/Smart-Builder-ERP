@@ -81,7 +81,7 @@ export const GetAllPendingPayments = async () => {
   JOIN Project p ON pr.project_id = p.id
   JOIN Expense_Category ec ON pr.category_id = ec.id
   JOIN User u ON pr.user_id = u.id
-  LEFT JOIN Account_Details ad ON pr.account_id = ad.id
+  LEFT JOIN Account_Details ad ON pr.receiver_id = ad.id
   WHERE pr.status = 'Requested'
   ORDER BY pr.date ASC;`;
   

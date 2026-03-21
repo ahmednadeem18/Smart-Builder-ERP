@@ -60,11 +60,11 @@ export const CreateClient = async (body) => {
     error.status = 400;
     throw error;
   }
-  if (!account_id || isNaN(account_id)) {
-    const error = new Error("Valid account ID is required");
-    error.status = 400;
-    throw error;
-  }
+  // if (!account_id || isNaN(account_id)) {
+  //   const error = new Error("Valid account ID is required");
+  //   error.status = 400;
+  //   throw error;
+  // }
   if (account_id < 0) {
     const error = new Error("Account ID cannot be negative");
     error.status = 400;
@@ -99,4 +99,21 @@ export const GetClientFullProfile = async (id) => {
   };
 
   return profile;
+};
+
+
+export const CreateClientWithAccount = async (body) => {
+  const { name, phone_number, IBAN, bank_name, holder_name } = body;
+
+  if (!name || !phone_number || !IBAN || !bank_name || !holder_name) {
+    const error = new Error("All fields are required");
+    error.status = 400;
+    throw error;
+  }
+
+  const accountResult = await repo.CreateAccount(IBAN, bank_name, holder_name);
+  const account_id = accountResult.insertId;
+  console.log("Full account result:", JSON.stringify(accountResult));
+  const clientResult = await repo.CreateClient(name, phone_number, account_id);
+  return { id: clientResult.insertId, name };
 };

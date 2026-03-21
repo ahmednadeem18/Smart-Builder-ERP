@@ -499,41 +499,31 @@ BEGIN
         NOW()
     );
 END//
+DROP TRIGGER IF EXISTS target_project_updates;
+DELIMITER ;
 
 CREATE TRIGGER target_project_updates
 AFTER UPDATE ON Project
 FOR EACH ROW
 BEGIN
+  IF OLD.status <> NEW.status THEN
+    INSERT INTO Progress_Log(project_id, log_text, log_date)
+    VALUES (
+      NEW.id,
+      CONCAT('Project status changed from ', OLD.status, ' to ', NEW.status),
+      NOW()
+    );
+  END IF;
 
-    -- log if the status of the project is changed
-    IF OLD.status <> NEW.status THEN
-        INSERT INTO Progress_Log(project_id, log_text, date)
-        VALUES (
-            NEW.id,
-            CONCAT(
-                'Project status changed from ',
-                OLD.status,
-                ' to ',
-                NEW.status
-            ),
-            NOW()
-        );
-    END IF;
-
-    -- log if the end date is changed of the project
-    IF OLD.end_date <> NEW.end_date THEN
-        INSERT INTO Progress_Log(project_id, log_text, date)
-        VALUES (
-            NEW.id,
-            CONCAT(
-                'Project end date updated to ',
-                NEW.end_date
-            ),
-            NOW()
-        );
-    END IF;
-END //
-
+  IF OLD.end_date <> NEW.end_date THEN
+    INSERT INTO Progress_Log(project_id, log_text, log_date)
+    VALUES (
+      NEW.id,
+      CONCAT('Project end date updated to ', NEW.end_date),
+      NOW()
+    );
+  END IF;
+END//
 
 
 
@@ -552,6 +542,8 @@ BEGIN
     END IF;
 END;
 //
+
+DELIMITER ;
 
 CREATE TRIGGER release_workers_after_project_completion
 AFTER UPDATE ON Project
@@ -647,6 +639,8 @@ LEFT JOIN Project p
 
 
 
+DESCRIBE Account_Details;
 
+SELECT * FROM Client;
 
-
+DESCRIBE Payment_Request;

@@ -1,0 +1,2236 @@
+openapi: 3.0.3
+info:
+  title: Construction Management System API
+  description: |
+    Full REST API for the Construction Management System covering Auth, Admin (Director),
+    Project Manager, HR, Finance, Material, Equipment, Subcontractor, and Client modules.
+
+    ## Authentication
+    All protected routes require a Bearer JWT token in the `Authorization` header.
+    Roles enforced via RBAC middleware: `Director`, `Project Manager`, `HR Manager`,
+    `Finance Manager`, `Material Manager`, `Subcontractor Manager`.
+
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:5000/api
+    description: Local Development Server
+  - url: https://your-domain.com/api
+    description: Production Server
+
+tags:
+  - name: Auth
+    description: Authentication & session management
+  - name: Admin
+    description: Director-level project administration
+  - name: Projects
+    description: General project operations
+  - name: Clients
+    description: Client management
+  - name: Equipment
+    description: Equipment inventory and allocation
+  - name: Finance
+    description: Financial operations (Finance Manager only)
+  - name: HR
+    description: Human resources management (HR Manager only)
+  - name: Material
+    description: Material inventory and requests
+  - name: Project Manager
+    description: PM-specific operations
+  - name: Subcontractor
+    description: Subcontractor requests and allocation
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from POST /auth/login
+
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "An error occurred"
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "john_doe"
+        password:
+          type: string
+          format: password
+          example: "securepassword123"
+
+    LoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            user:
+              $ref: '#/components/schemas/UserBasic'
+
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "john_doe"
+        role:
+          type: string
+          example: "Director"
+
+    VerifyTokenResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Token valid"
+        user:
+          $ref: '#/components/schemas/UserBasic'
+
+    ChangePasswordRequest:
+      type: object
+      required:
+        - oldPassword
+        - newPassword
+      properties:
+        oldPassword:
+          type: string
+          format: password
+          example: "oldpassword123"
+        newPassword:
+          type: string
+          format: password
+          example: "newpassword456"
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+        project_name:
+          type: string
+          example: "Highway Construction Phase 1"
+        director_id:
+          type: integer
+          example: 1
+        manager_id:
+          type: integer
+          example: 5
+        client_id:
+          type: integer
+          example: 10
+        start_date:
+          type: string
+          format: date
+          example: "2024-01-15"
+        status:
+          type: string
+          enum: [planning, ongoing, completed, on_hold]
+          example: "ongoing"
+
+    CreateProjectRequest:
+      type: object
+      required:
+        - project_name
+        - director_id
+        - manager_id
+        - client_id
+        - start_date
+        - labour_cost
+        - material_cost
+        - equipment_rent
+        - subcontractor_cost
+      properties:
+        project_name:
+          type: string
+          example: "Highway Construction Phase 1"
+        director_id:
+          type: integer
+          example: 1
+        manager_id:
+          type: integer
+          example: 5
+        client_id:
+          type: integer
+          example: 10
+        start_date:
+          type: string
+          format: date
+          example: "2024-01-15"
+        labour_cost:
+          type: number
+          format: float
+          example: 500000.00
+        material_cost:
+          type: number
+          format: float
+          example: 300000.00
+        equipment_rent:
+          type: number
+          format: float
+          example: 150000.00
+        subcontractor_cost:
+          type: number
+          format: float
+          example: 200000.00
+
+    UpdateProjectStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [planning, ongoing, completed, on_hold]
+          example: "completed"
+
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        name:
+          type: string
+          example: "Acme Corp"
+        contact_email:
+          type: string
+          format: email
+          example: "contact@acme.com"
+        phone:
+          type: string
+          example: "+92-300-1234567"
+        address:
+          type: string
+          example: "123 Main St, Lahore"
+
+    CreateClientRequest:
+      type: object
+      required:
+        - name
+        - contact_email
+      properties:
+        name:
+          type: string
+          example: "Acme Corp"
+        contact_email:
+          type: string
+          format: email
+          example: "contact@acme.com"
+        phone:
+          type: string
+          example: "+92-300-1234567"
+        address:
+          type: string
+          example: "123 Main St, Lahore"
+
+    Equipment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Excavator CAT 320"
+        type:
+          type: string
+          enum: [owned, rented]
+          example: "owned"
+        status:
+          type: string
+          example: "available"
+
+    ApproveEquipmentRequest:
+      type: object
+      required:
+        - requestId
+        - equipmentId
+        - projectId
+        - startDate
+        - endDate
+      properties:
+        requestId:
+          type: integer
+          example: 55
+        equipmentId:
+          type: integer
+          example: 12
+        projectId:
+          type: integer
+          example: 101
+        startDate:
+          type: string
+          format: date
+          example: "2024-02-01"
+        endDate:
+          type: string
+          format: date
+          example: "2024-03-01"
+
+    HRResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Muhammad Ali"
+        category:
+          type: string
+          example: "Mason"
+        status:
+          type: string
+          enum: [available, allocated]
+          example: "available"
+
+    CreateHRRequestBody:
+      type: object
+      required:
+        - projectId
+        - categoryId
+        - quantity
+      properties:
+        projectId:
+          type: integer
+          example: 101
+        categoryId:
+          type: integer
+          example: 3
+        quantity:
+          type: integer
+          example: 10
+
+    ApproveHRRequestBody:
+      type: object
+      required:
+        - requestId
+        - workerIds
+      properties:
+        requestId:
+          type: integer
+          example: 22
+        workerIds:
+          type: array
+          items:
+            type: integer
+          example: [1, 2, 3, 4, 5]
+
+    FreeLabourBody:
+      type: object
+      required:
+        - allocationId
+        - categoryType
+      properties:
+        allocationId:
+          type: integer
+          example: 88
+        categoryType:
+          type: string
+          example: "Mason"
+
+    Expense:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        project_id:
+          type: integer
+          example: 101
+        amount:
+          type: number
+          format: float
+          example: 25000.00
+        category:
+          type: string
+          example: "Labour"
+        date:
+          type: string
+          format: date
+          example: "2024-02-10"
+        description:
+          type: string
+          example: "Weekly labour payment"
+
+    Revenue:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        project_id:
+          type: integer
+          example: 101
+        amount:
+          type: number
+          format: float
+          example: 100000.00
+        source:
+          type: string
+          example: "Client Invoice #INV-001"
+        date:
+          type: string
+          format: date
+          example: "2024-02-15"
+
+    MaterialStock:
+      type: object
+      properties:
+        category_id:
+          type: integer
+          example: 1
+        category_name:
+          type: string
+          example: "Cement"
+        total_quantity:
+          type: number
+          example: 5000
+        unit:
+          type: string
+          example: "bags"
+
+    CreateMaterialRequestBody:
+      type: object
+      required:
+        - projectId
+        - categoryId
+        - quantity
+      properties:
+        projectId:
+          type: integer
+          example: 101
+        categoryId:
+          type: integer
+          example: 1
+        quantity:
+          type: number
+          example: 500
+
+    ManualShipmentBody:
+      type: object
+      required:
+        - supplierId
+        - categoryId
+        - quantity
+        - unitPrice
+        - shipmentDate
+      properties:
+        supplierId:
+          type: integer
+          example: 3
+        categoryId:
+          type: integer
+          example: 1
+        quantity:
+          type: number
+          example: 1000
+        unitPrice:
+          type: number
+          format: float
+          example: 250.00
+        shipmentDate:
+          type: string
+          format: date
+          example: "2024-02-05"
+
+    ApproveBatchBody:
+      type: object
+      required:
+        - requestId
+        - inventoryId
+        - quantity
+      properties:
+        requestId:
+          type: integer
+          example: 33
+        inventoryId:
+          type: integer
+          example: 7
+        quantity:
+          type: number
+          example: 500
+
+    ProgressLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        project_id:
+          type: integer
+          example: 101
+        log_text:
+          type: string
+          example: "Foundation work completed 60%"
+        created_at:
+          type: string
+          format: date-time
+
+    AddProgressLogBody:
+      type: object
+      required:
+        - projectId
+        - logText
+      properties:
+        projectId:
+          type: integer
+          example: 101
+        logText:
+          type: string
+          example: "Foundation work completed 60%"
+
+    SubmitResourceRequestBody:
+      type: object
+      required:
+        - projectId
+        - categoryId
+        - quantity
+      properties:
+        projectId:
+          type: integer
+          example: 101
+        categoryId:
+          type: integer
+          example: 2
+        quantity:
+          type: integer
+          example: 5
+        userId:
+          type: integer
+          example: 7
+
+    CreateSubRequestBody:
+      type: object
+      required:
+        - projectId
+        - categoryId
+      properties:
+        projectId:
+          type: integer
+          example: 101
+        categoryId:
+          type: integer
+          example: 4
+
+    ApproveSubcontractorBody:
+      type: object
+      required:
+        - requestId
+        - subcontractorId
+        - projectId
+        - price
+      properties:
+        requestId:
+          type: integer
+          example: 15
+        subcontractorId:
+          type: integer
+          example: 7
+        projectId:
+          type: integer
+          example: 101
+        price:
+          type: number
+          format: float
+          example: 75000.00
+
+    DashboardOverview:
+      type: object
+      properties:
+        total_projects:
+          type: integer
+          example: 12
+        ongoing_projects:
+          type: integer
+          example: 7
+        completed_projects:
+          type: integer
+          example: 4
+        total_budget:
+          type: number
+          format: float
+          example: 5000000.00
+        total_expenses:
+          type: number
+          format: float
+          example: 2500000.00
+
+# ============================================================
+# PATHS
+# ============================================================
+paths:
+
+  # ─────────────────────────── AUTH ───────────────────────────
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: User login
+      description: Authenticates a user and returns a JWT token. No authentication required.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              username: "john_director"
+              password: "pass1234"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                success: true
+                data:
+                  token: "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6IkRpcmVjdG9yIn0.abc123"
+                  user:
+                    id: 1
+                    username: "john_director"
+                    role: "Director"
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: "Invalid username or password"
+
+  /auth/verify:
+    get:
+      tags: [Auth]
+      summary: Verify JWT token
+      description: Validates the current JWT token and returns the decoded user payload.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyTokenResponse'
+        '401':
+          description: Token missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/change-password:
+    put:
+      tags: [Auth]
+      summary: Change user password
+      description: Allows an authenticated user to change their own password.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+            example:
+              oldPassword: "currentPass123"
+              newPassword: "newSecurePass456"
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Old password incorrect or validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ─────────────────────────── ADMIN (Director) ───────────────────────────
+
+  /admin/projects:
+    get:
+      tags: [Admin]
+      summary: Get all projects
+      description: Returns a list of all projects. Accessible by Director only.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Projects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "projects retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden – insufficient role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags: [Admin]
+      summary: Create a new project
+      description: Creates a new project along with its budget breakdown. Director only.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+            example:
+              project_name: "City Bridge Project"
+              director_id: 1
+              manager_id: 5
+              client_id: 10
+              start_date: "2024-03-01"
+              labour_cost: 600000
+              material_cost: 400000
+              equipment_rent: 200000
+              subcontractor_cost: 250000
+      responses:
+        '200':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Project created successfully"
+                  budget_id:
+                    type: integer
+                    example: 42
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /admin/projects/{id}/status:
+    patch:
+      tags: [Admin]
+      summary: Update project status
+      description: Updates the status of a project. Accessible by Director and Project Manager.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Project ID
+          example: 101
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectStatusRequest'
+            example:
+              status: "completed"
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                  message:
+                    type: string
+                    example: "Project status updated successfully!"
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /admin/dashboard-overview:
+    get:
+      tags: [Admin]
+      summary: Get dashboard overview
+      description: Returns high-level metrics for the Director dashboard.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Dashboard overview retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "dashboard overview retrieved successfully"
+                  data:
+                    $ref: '#/components/schemas/DashboardOverview'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ─────────────────────────── CLIENTS ───────────────────────────
+
+  /clients:
+    get:
+      tags: [Clients]
+      summary: Get all clients
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Clients retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "clients retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags: [Clients]
+      summary: Create a new client
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClientRequest'
+            example:
+              name: "BuildCo Ltd"
+              contact_email: "info@buildco.com"
+              phone: "+92-321-9876543"
+              address: "45 Industrial Zone, Karachi"
+      responses:
+        '201':
+          description: Client created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Client created successfully"
+                  data:
+                    $ref: '#/components/schemas/Client'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /clients/{id}:
+    get:
+      tags: [Clients]
+      summary: Get a specific client by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Client retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "client retrieved successfully"
+                  data:
+                    $ref: '#/components/schemas/Client'
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /clients/{id}/projects:
+    get:
+      tags: [Clients]
+      summary: Get all projects of a specific client
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Projects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "projects retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /clients/{id}/payments:
+    get:
+      tags: [Clients]
+      summary: Get all payments of a specific client
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Payments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "payments retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /clients/{id}/invoices:
+    get:
+      tags: [Clients]
+      summary: Get all invoices of a specific client
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Invoices retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "invoice retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ─────────────────────────── EQUIPMENT ───────────────────────────
+
+  /equipment/all:
+    get:
+      tags: [Equipment]
+      summary: Get all equipment
+      description: Returns the full equipment inventory (owned + rented).
+      responses:
+        '200':
+          description: Equipments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "equipments retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Equipment'
+
+  /equipment/rented:
+    get:
+      tags: [Equipment]
+      summary: Get all rented equipment
+      responses:
+        '200':
+          description: Rented equipments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Equipment'
+
+  /equipment/owned:
+    get:
+      tags: [Equipment]
+      summary: Get all owned equipment
+      responses:
+        '200':
+          description: Owned equipments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Equipment'
+
+  /equipment/requests/pending:
+    get:
+      tags: [Equipment]
+      summary: Get pending equipment requests
+      description: Returns all equipment allocation requests awaiting manager approval.
+      responses:
+        '200':
+          description: Pending requests retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        requestId:
+                          type: integer
+                          example: 55
+                        projectId:
+                          type: integer
+                          example: 101
+                        requestedBy:
+                          type: string
+                          example: "PM John"
+                        status:
+                          type: string
+                          example: "pending"
+
+  /equipment/approve:
+    post:
+      tags: [Equipment]
+      summary: Approve an equipment request
+      description: Allocates a specific equipment to a project for a given date range.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveEquipmentRequest'
+            example:
+              requestId: 55
+              equipmentId: 12
+              projectId: 101
+              startDate: "2024-02-01"
+              endDate: "2024-03-01"
+      responses:
+        '200':
+          description: Equipment request approved and allocated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Equipment allocated successfully"
+                  data:
+                    type: object
+        '400':
+          description: Missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: "Missing required fields: requestId, equipmentId, projectId, startDate, or endDate"
+
+  # ─────────────────────────── FINANCE ───────────────────────────
+
+  /finance/expenses:
+    get:
+      tags: [Finance]
+      summary: Get all expenses
+      description: Returns all recorded expenses. Requires Finance Manager role.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Expenses retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Expense'
+        '403':
+          description: Forbidden – Finance Manager role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /finance/revenues:
+    get:
+      tags: [Finance]
+      summary: Get all revenues
+      description: Returns all recorded revenues. Requires Finance Manager role.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Revenues retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Revenues retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Revenue'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /finance/payments/pending:
+    get:
+      tags: [Finance]
+      summary: Get pending payment requests
+      description: Returns payment requests awaiting Finance Manager approval.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Pending payments retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Pending payment requests retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /finance/invoices/pending:
+    get:
+      tags: [Finance]
+      summary: Get pending invoice requests
+      description: Returns client invoices awaiting Finance Manager approval.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Pending invoices retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Pending invoice requests retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /finance/payment/approve/{id}:
+    post:
+      tags: [Finance]
+      summary: Approve a payment request
+      description: Approves a payment request and logs it as a project expense.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Payment request ID
+          example: 77
+      responses:
+        '200':
+          description: Payment request approved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Payment approved and expense logged"
+        '404':
+          description: Payment request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /finance/invoice/approve/{id}:
+    post:
+      tags: [Finance]
+      summary: Approve a client invoice
+      description: Approves a client invoice and logs it as revenue.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Invoice ID
+          example: 33
+      responses:
+        '200':
+          description: Invoice approved and revenue logged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invoice approved and revenue logged"
+        '404':
+          description: Invoice not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ─────────────────────────── HR ───────────────────────────
+
+  /hr/resources:
+    get:
+      tags: [HR]
+      summary: Get all human resources
+      description: Returns all workers/labourers. HR Manager only.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Human resources retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Human resources retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HRResource'
+        '403':
+          description: Forbidden – HR Manager role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /hr/requests/pending:
+    get:
+      tags: [HR]
+      summary: Get pending HR requests
+      description: Returns all pending HR staffing requests from Project Managers.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Pending HR requests retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /hr/request:
+    post:
+      tags: [HR]
+      summary: Create an HR staffing request
+      description: PM submits a request for workers of a specific category. userId is extracted from JWT token.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHRRequestBody'
+            example:
+              projectId: 101
+              categoryId: 3
+              quantity: 10
+      responses:
+        '201':
+          description: HR request created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /hr/approve:
+    post:
+      tags: [HR]
+      summary: Approve an HR request and allocate workers
+      description: HR Manager approves a staffing request and assigns specific workers.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveHRRequestBody'
+            example:
+              requestId: 22
+              workerIds: [1, 2, 3, 4, 5]
+      responses:
+        '200':
+          description: HR request approved, workers allocated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /hr/free:
+    post:
+      tags: [HR]
+      summary: Free allocated labour
+      description: Marks previously allocated workers as available again.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeLabourBody'
+            example:
+              allocationId: 88
+              categoryType: "Mason"
+      responses:
+        '200':
+          description: Labour freed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ─────────────────────────── MATERIAL ───────────────────────────
+
+  /material/stock:
+    get:
+      tags: [Material]
+      summary: Get current material stock
+      description: Returns the current inventory levels for all material categories.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Stock retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Current stock retrieved"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MaterialStock'
+
+  /material/shipments:
+    get:
+      tags: [Material]
+      summary: Get all shipments
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Shipments retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+
+  /material/suppliers:
+    get:
+      tags: [Material]
+      summary: Get all suppliers
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Suppliers retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Suppliers retrieved"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 3
+                        name:
+                          type: string
+                          example: "ABC Supplies Co."
+
+  /material/requests/pending:
+    get:
+      tags: [Material]
+      summary: Get pending material requests
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Pending requests retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Pending requests retrieved"
+                  data:
+                    type: array
+                    items:
+                      type: object
+
+  /material/inventory-batches:
+    get:
+      tags: [Material]
+      summary: Get inventory batches for a category
+      description: Returns available inventory batches filtered by category and quantity. Used when a manager reviews a pending request.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: categoryId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Material category ID
+          example: 1
+        - name: requestedQty
+          in: query
+          required: true
+          schema:
+            type: number
+          description: Quantity needed
+          example: 500
+      responses:
+        '200':
+          description: Available batches retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Available batches retrieved"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        inventoryId:
+                          type: integer
+                          example: 7
+                        batchDate:
+                          type: string
+                          format: date
+                          example: "2024-01-20"
+                        availableQty:
+                          type: number
+                          example: 1200
+                        unitPrice:
+                          type: number
+                          example: 250.00
+
+  /material/request:
+    post:
+      tags: [Material]
+      summary: Create a material request
+      description: PM or authorized user requests materials for a project. userId extracted from JWT.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMaterialRequestBody'
+            example:
+              projectId: 101
+              categoryId: 1
+              quantity: 500
+      responses:
+        '201':
+          description: Material request created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /material/shipment/manual:
+    post:
+      tags: [Material]
+      summary: Log a manual shipment
+      description: Material Manager manually logs a new material shipment, updating inventory.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManualShipmentBody'
+            example:
+              supplierId: 3
+              categoryId: 1
+              quantity: 1000
+              unitPrice: 250.00
+              shipmentDate: "2024-02-05"
+      responses:
+        '201':
+          description: Shipment logged, inventory updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Manual shipment logged. Inventory updated."
+                  data:
+                    type: object
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /material/approve-batch:
+    post:
+      tags: [Material]
+      summary: Approve material request from a specific batch
+      description: Material Manager approves a pending request by allocating from a specific inventory batch. Also logs a Finance entry.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveBatchBody'
+            example:
+              requestId: 33
+              inventoryId: 7
+              quantity: 500
+      responses:
+        '200':
+          description: Batch approved and allocated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Material allocated from batch successfully"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ─────────────────────────── PROJECT MANAGER ───────────────────────────
+
+  /pm/projects:
+    get:
+      tags: [Project Manager]
+      summary: Get projects assigned to the logged-in PM
+      description: Returns all projects where the authenticated user is the Project Manager.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Assigned projects retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Assigned projects retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+        '403':
+          description: Forbidden – Project Manager role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /pm/projects/{managerId}:
+    get:
+      tags: [Project Manager]
+      summary: Get projects for a specific manager ID
+      description: Alternate route – returns projects for a given manager ID from path param.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: managerId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        '200':
+          description: Assigned projects retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /pm/project/logs/{projectId}:
+    get:
+      tags: [Project Manager]
+      summary: Get project log history
+      description: Returns all progress logs for a specific project. Accessible by PM and Director.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 101
+      responses:
+        '200':
+          description: Project logs retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Project logs retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProgressLog'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /pm/log:
+    post:
+      tags: [Project Manager]
+      summary: Add a project progress update
+      description: PM adds a progress log entry to a project.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddProgressLogBody'
+            example:
+              projectId: 101
+              logText: "Steel framework for floors 3–5 completed. Electrical conduit installation begins Monday."
+      responses:
+        '201':
+          description: Progress log added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Progress log added successfully"
+                  data:
+                    $ref: '#/components/schemas/ProgressLog'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /pm/request/{type}:
+    post:
+      tags: [Project Manager]
+      summary: Submit a resource request
+      description: |
+        PM submits a request for a resource type. The `type` path parameter determines the
+        resource category:
+        - `material` – material request
+        - `hr` – human resources (labour) request
+        - `equipment` – equipment request
+        - `subcontractor` – subcontractor request
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [material, hr, equipment, subcontractor]
+          example: "equipment"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResourceRequestBody'
+            example:
+              projectId: 101
+              categoryId: 2
+              quantity: 3
+              userId: 7
+      responses:
+        '201':
+          description: Resource request submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Equipment request submitted successfully"
+                  data:
+                    type: object
+        '400':
+          description: Invalid type or validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ─────────────────────────── SUBCONTRACTOR ───────────────────────────
+
+  /subcontractor/request:
+    post:
+      tags: [Subcontractor]
+      summary: Create a subcontractor request
+      description: PM submits a request for a subcontractor for a specific project and category. userId is extracted from JWT.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubRequestBody'
+            example:
+              projectId: 101
+              categoryId: 4
+      responses:
+        '201':
+          description: Request sent to Subcontractor Manager
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Request successfully sent to Subcontractor Manager."
+        '400':
+          description: Missing projectId or categoryId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: "Project and Category are required"
+
+  /subcontractor/requests/pending:
+    get:
+      tags: [Subcontractor]
+      summary: Get pending subcontractor requests
+      description: Returns all subcontractor requests awaiting Subcontractor Manager review.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Pending requests retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Pending requests retrieved"
+                  data:
+                    type: array
+                    items:
+                      type: object
+
+  /subcontractor/list/{categoryId}:
+    get:
+      tags: [Subcontractor]
+      summary: Get subcontractors by category
+      description: Returns available subcontractors filtered by category. Used to populate approval dropdown.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Category ID for the subcontractor type
+          example: 4
+      responses:
+        '200':
+          description: Subcontractors retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 7
+                        name:
+                          type: string
+                          example: "TechBuild Contractors"
+                        category:
+                          type: string
+                          example: "Electrical"
+
+  /subcontractor/approve:
+    post:
+      tags: [Subcontractor]
+      summary: Approve a subcontractor allocation
+      description: Subcontractor Manager approves a request by selecting a subcontractor and fixing the price.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveSubcontractorBody'
+            example:
+              requestId: 15
+              subcontractorId: 7
+              projectId: 101
+              price: 75000.00
+      responses:
+        '200':
+          description: Subcontractor allocated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Subcontractor allocated successfully"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

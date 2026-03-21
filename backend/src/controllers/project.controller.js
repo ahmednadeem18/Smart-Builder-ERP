@@ -127,3 +127,31 @@ export const UpdateProjectStatus = async (req, res, next) => {
   }
 
 };
+
+
+export const GetProjectFullReport = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const report = await service.GetProjectFullReport(id);
+    res.status(200).json({
+      success: true,
+      message: "Project report retrieved successfully",
+      data: report
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const GetUsersByRole = async (req, res, next) => {
+  try {
+    const { role } = req.query;
+    const users = await service.GetUsersByRole(role);
+    res.status(200).json({
+      success: true,
+      data: users
+    });
+  } catch (error) {
+    next(error);
+  }
+};
