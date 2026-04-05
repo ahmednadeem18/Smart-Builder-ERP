@@ -11,6 +11,7 @@ import Projects from "./pages/Project";
 import Dashboard from "./pages/Dashboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import Unauthorized from "./pages/Unauthorized";
+import SubDashboard from "./pages/Subdashboard";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="clients" element={<Clients />} />
             <Route path="finance" element={<Finance />} />
             <Route path="equipment" element={<Equipment />} />
+            <Route path="/subcontractor-dashboard" element={<SubDashboard />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/login" replace />} />

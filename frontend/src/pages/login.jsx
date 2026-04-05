@@ -34,7 +34,7 @@ export default function Login() {
         "Project Manager":       "/pm-dashboard",
         "Material Manager":      "/material-dashboard",
         "Equipment Manager":     "/equipment-dashboard",
-        "Subcontractor Manager": "/subcontractor-dashboard",
+        "Sub Contractor Manager": "/subcontractor-dashboard",
       };
       navigate(roleRoutes[u.role] ?? "/unauthorized");
     } catch (err) {
