@@ -1,0 +1,91 @@
+:root {
+  --primary: #0f766e;
+  --bg: #f8fafc;
+  --text-dark: #1e293b;
+  --border: #e2e8f0;
+}
+
+.material-container {
+  padding: 2rem;
+  background: var(--bg);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Header & Back Button */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.back-btn {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.back-btn:hover { background: #f1f5f9; }
+
+.title-section h1 { font-size: 1.8rem; color: var(--text-dark); margin: 0; }
+.title-section p { color: #64748b; margin: 5px 0 0; }
+
+/* Tabs Logic */
+.tabs-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: #e2e8f0;
+  padding: 5px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.tab.active {
+  background: white;
+  color: var(--primary);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+/* Table Style */
+.content-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.custom-table { width: 100%; border-collapse: collapse; }
+.custom-table th { background: #f8fafc; padding: 15px; text-align: left; border-bottom: 2px solid var(--border); color: #64748b; }
+.custom-table td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+
+.tag { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+.tag.blue { background: #dbeafe; color: #1e40af; }
+.tag.green { background: #dcfce7; color: #166534; }
+.tag.red { background: #fee2e2; color: #991b1b; }
+
+.action-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+
+/* 📱 Media Queries */
+@media (max-width: 768px) {
+  .material-container { padding: 1rem; }
+  .tabs-bar { width: 100%; overflow-x: auto; }
+  .table-responsive { overflow-x: auto; }
+  .custom-table { min-width: 700px; }
+  .dashboard-header { flex-direction: column; align-items: flex-start; }
+}

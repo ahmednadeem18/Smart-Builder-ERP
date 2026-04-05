@@ -28,6 +28,10 @@ export default function Sidebar() {
         return [
           { to: "/hr-dashboard", label: "HR Dashboard" },
         ];
+      case "Material Manager":
+      return [
+        { to: "/material-dashboard", label: "Material Management" },
+      ];
       default:
         // Agar koi aur role hai to by default sirf dashboard dikhega
         return [{ to: "/dashboard", label: "Dashboard" }];

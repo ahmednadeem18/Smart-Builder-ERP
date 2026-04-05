@@ -12,7 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import Unauthorized from "./pages/Unauthorized";
 import SubDashboard from "./Managers/Subdashboard";
-
+import MaterialDashboard from "./Managers/MaterialDashboard";
 function App() {
   return (
     <BrowserRouter>
@@ -29,8 +29,10 @@ function App() {
                 "Sub Contractor Manager", 
                 "HR Manager", 
                 "Project Manager", 
-                "Finance Manager"
-              ]}>
+                "Finance Manager",
+                "Material Manager",
+                "Equipment Manager"
+              ]}> 
                 <Layout />
               </ProtectedRoute>
             }
@@ -38,6 +40,7 @@ function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="subcontractor-dashboard" element={<SubDashboard />} />
+            <Route path="material-dashboard" element={<MaterialDashboard />} />
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
