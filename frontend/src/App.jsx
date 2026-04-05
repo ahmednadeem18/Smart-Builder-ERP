@@ -24,20 +24,27 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute allowedRoles={["Director"]}>
+              <ProtectedRoute allowedRoles={[
+                "Director", 
+                "Sub Contractor Manager", 
+                "HR Manager", 
+                "Project Manager", 
+                "Finance Manager"
+              ]}>
                 <Layout />
               </ProtectedRoute>
             }
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="subcontractor-dashboard" element={<SubDashboard />} />
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
             <Route path="clients" element={<Clients />} />
             <Route path="finance" element={<Finance />} />
             <Route path="equipment" element={<Equipment />} />
-            <Route path="/subcontractor-dashboard" element={<SubDashboard />} />
+            
           </Route>
 
           <Route path="*" element={<Navigate to="/login" replace />} />

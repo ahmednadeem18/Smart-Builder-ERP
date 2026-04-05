@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { subcontractorAPI } from "../api/axios";
 import AssignSubModal from "./AssignSubModal";
-
+import "./SubDashboard.css";
 export default function SubDashboard() {
   const [requests, setRequests] = useState([]);
   const [selectedReq, setSelectedReq] = useState(null); // Modal handle karne ke liye
@@ -31,7 +31,6 @@ export default function SubDashboard() {
               <tr>
                 <th>Project</th>
                 <th>Work Category</th>
-                <th>Description</th>
                 <th>Requested By</th>
                 <th>Action</th>
               </tr>
@@ -41,7 +40,6 @@ export default function SubDashboard() {
                 <tr key={req.id}>
                   <td>{req.project_name}</td>
                   <td><span className="badge">{req.category_name}</span></td>
-                  <td>{req.description}</td>
                   <td>{req.requested_by}</td>
                   <td>
                     <button className="btn-primary" onClick={() => setSelectedReq(req)}>

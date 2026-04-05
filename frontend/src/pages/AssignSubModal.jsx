@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { subcontractorAPI } from "../api/axios";
-
+import "./assign.css";
 export default function AssignSubModal({ request, onClose, onSuccess }) {
   const [firms, setFirms] = useState([]);
   const [form, setForm] = useState({

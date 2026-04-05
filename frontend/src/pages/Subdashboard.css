@@ -1,0 +1,161 @@
+/* =========================================
+   SUB-DASHBOARD MAIN LAYOUT
+========================================= */
+.dashboard-page {
+  padding: 24px;
+  background-color: #f1f5f9; /* Light greyish-blue background */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.table-box {
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  /* Mobile pe table bahar na nikle iske liye horizontal scroll */
+  overflow-x: auto; 
+}
+
+/* =========================================
+   HEADER SECTION
+========================================= */
+.header-flex {
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-flex h2 {
+  margin: 0;
+  color: #0f172a; /* Dark slate */
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.header-flex p {
+  margin: 0;
+  color: #64748b; /* Lighter text for description */
+  font-size: 0.95rem;
+}
+
+/* =========================================
+   TABLE STYLING
+========================================= */
+.cms-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 600px; /* Choti screen pe table sikrega nahi, scroll hoga */
+}
+
+.cms-table th, 
+.cms-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.cms-table th {
+  background-color: #f8fafc;
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: capitalize;
+}
+
+/* Row Hover Effect for premium feel */
+.cms-table tbody tr:hover {
+  background-color: #f8fafc;
+  transition: background-color 0.2s ease;
+}
+
+/* =========================================
+   BADGES & BUTTONS
+========================================= */
+.badge {
+  background-color: #e0f2fe; /* Light blue */
+  color: #0369a1; /* Dark blue text */
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap; /* Toke text do lines mein na tute */
+  display: inline-block;
+}
+
+.btn-primary {
+  background-color: #0f766e; /* Professional Teal */
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  background-color: #115e59; /* Darker teal on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+   📱 MEDIA QUERIES (RESPONSIVENESS)
+========================================= */
+
+/* Tablets (iPad etc.) */
+@media screen and (max-width: 768px) {
+  .dashboard-page {
+    padding: 16px;
+  }
+  
+  .table-box {
+    padding: 16px;
+  }
+
+  .header-flex h2 {
+    font-size: 1.25rem;
+  }
+
+  .cms-table th, 
+  .cms-table td {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Phones */
+@media screen and (max-width: 480px) {
+  .dashboard-page {
+    padding: 10px;
+  }
+
+  .table-box {
+    padding: 12px;
+  }
+
+  .header-flex {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
+
+  .btn-primary {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .badge {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,153 @@
+/* =========================================
+   MODAL OVERLAY (Background Dark/Blur)
+========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.6); /* Dark slate background with opacity */
+  backdrop-filter: blur(4px); /* Piche ka dashboard blur ho jayega */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Sab se oopar dikhane ke liye */
+}
+
+/* =========================================
+   MODAL BOX (The Actual Form Container)
+========================================= */
+.modal-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 500px; /* Form ki perfect width */
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  animation: modalFadeIn 0.3s ease-out forwards; /* Smooth entry animation */
+}
+
+/* Animation Logic */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================
+   TYPOGRAPHY (Headings & Text)
+========================================= */
+.modal-box h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #0f172a;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.sub-text {
+  color: #64748b;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 16px;
+}
+
+/* =========================================
+   FORM INPUTS & SELECTS
+========================================= */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #334155;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background-color: #f8fafc;
+  transition: all 0.2s ease;
+  box-sizing: border-box; /* Padding ki wajah se width bahar na jaye */
+}
+
+/* Jab input par click ho (Focus state) */
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0f766e; /* Primary Teal */
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); /* Glow effect */
+  background-color: #ffffff;
+}
+
+/* =========================================
+   GRID LAYOUT (For Dates side-by-side)
+========================================= */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* =========================================
+   BUTTONS (Cancel & Submit)
+========================================= */
+.btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn-secondary {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Note: .btn-primary is already styled in SubDashboard.css, 
+   but it will inherit beautifully here. */
+
+/* =========================================
+   📱 MEDIA QUERIES (Mobile Adjustments)
+========================================= */
+@media screen and (max-width: 480px) {
+  .modal-box {
+    width: 90%;
+    padding: 24px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr; /* Mobile par dates oopar neechay aayengi */
+    gap: 0;
+  }
+}

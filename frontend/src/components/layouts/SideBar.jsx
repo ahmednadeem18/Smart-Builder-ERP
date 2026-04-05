@@ -1,16 +1,41 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/authcontext";
 
-const links = [
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/projects",  label: "Projects" },
-  { to: "/clients",   label: "Clients" },
-  { to: "/finance",   label: "Finance" },
-  { to: "/equipment", label: "Equipment" },
-];
-
 export default function Sidebar() {
   const { user, logout } = useAuth();
+
+  // 🛠️ Role ke hisaab se links decide karne ka function
+  const getSidebarLinks = (role) => {
+    switch (role) {
+      case "Director":
+        return [
+          { to: "/dashboard", label: "Dashboard" },
+          { to: "/projects",  label: "Projects" },
+          { to: "/clients",   label: "Clients" },
+          { to: "/finance",   label: "Finance" },
+          { to: "/equipment", label: "Equipment" },
+        ];
+      case "Sub Contractor Manager":
+        return [
+          { to: "/subcontractor-dashboard", label: "Subcontractor Requests" },
+          // Agar isko aur kuch dikhana ho to yahan add kar sakte hain
+        ];
+      case "Finance Manager":
+        return [
+          { to: "/finance-dashboard", label: "Finance Dashboard" },
+        ];
+      case "HR Manager":
+        return [
+          { to: "/hr-dashboard", label: "HR Dashboard" },
+        ];
+      default:
+        // Agar koi aur role hai to by default sirf dashboard dikhega
+        return [{ to: "/dashboard", label: "Dashboard" }];
+    }
+  };
+
+  // 🚀 User ke role ke hisaab se links generate honge
+  const links = getSidebarLinks(user?.role);
 
   return (
     <aside className="sidebar">
