@@ -211,10 +211,8 @@ button[type="submit"]:disabled {
   background: rgba(255,255,255,0.06);
   color: #fff;
 }
-
-/* ── TopBar ──────────────────────────────────────── */
 .topbar {
-  height: 56px;
+  height: 60px;
   background: #fff;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
@@ -224,30 +222,41 @@ button[type="submit"]:disabled {
   position: sticky;
   top: 0;
   z-index: 10;
-  margin-left: 220px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  margin-left: 220px; /* leave space for sidebar */
 }
 
-.topbar-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #1e293b;
-}
-
-.topbar-right {
+.topbar-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
+.topbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* role badge */
 .topbar-role {
   font-size: 12px;
   color: #fff;
   background: #0a7073;
-  padding: 3px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
+/* change password button */
 .topbar-change-password {
   font-size: 12px;
   color: #64748b;
@@ -262,6 +271,13 @@ button[type="submit"]:disabled {
 .topbar-change-password:hover {
   background: #f4f6f9;
   color: #1e293b;
+}
+
+/* optional: user wrapper for alignment */
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .main {
@@ -603,3 +619,5 @@ button[type="submit"]:disabled {
   color: #94a3b8;
   font-size: 12px;
 }
+
+

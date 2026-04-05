@@ -1,8 +1,12 @@
 # Smart Builder ERP
 
+## 0. Quick Demo
+For a quick demo visit following production link:
+https://smartbuildererp.vercel.app/login
+(deployed)
 ## 1. Project Overview
 
-**Group Number: 02** )
+**Group Number: 02**
 
 **Team Members:**
 | Name | Roll Number |
@@ -732,9 +736,9 @@ ERP acts as a single source of truth. If the system fails (server/database downt
 
 ---
 
-## 12.4 Security and Access Control Complexity  
+## 12.4 Security and Access Control Complexity
+
 Managing fine-grained role-based permissions across multiple modules becomes complex and error-prone as the system will grow.
----
 ### 12.5 No Real-Time Updates
 
 - System does not use WebSockets or live updates
