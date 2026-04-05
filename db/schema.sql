@@ -644,3 +644,5 @@ DESCRIBE Account_Details;
 SELECT * FROM Client;
 
 DESCRIBE Payment_Request;
+
+SELECT * FROM Progress_Log;
