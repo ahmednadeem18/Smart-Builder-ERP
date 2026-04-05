@@ -11,7 +11,7 @@ import Projects from "./pages/Project";
 import Dashboard from "./pages/Dashboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import Unauthorized from "./pages/Unauthorized";
-import SubDashboard from "./pages/Subdashboard";
+import SubDashboard from "./Managers/Subdashboard";
 
 function App() {
   return (
