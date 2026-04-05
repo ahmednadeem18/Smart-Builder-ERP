@@ -29,7 +29,6 @@ export default function Login() {
       const u = await login(form.username, form.password);
       const roleRoutes = {
         "Director":              "/dashboard",
-        "Admin":                 "/dashboard",
         "Finance Manager":       "/finance-dashboard",
         "HR Manager":            "/hr-dashboard",
         "Project Manager":       "/pm-dashboard",
@@ -40,6 +39,7 @@ export default function Login() {
       navigate(roleRoutes[u.role] ?? "/unauthorized");
     } catch (err) {
       setError("Invalid username or password.");
+      console.log("Login error:", err);
     } finally {
       setLoading(false);
     }
