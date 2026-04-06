@@ -107,6 +107,6 @@ export const CreatePaymentRequest = async (projectId, expenseCategoryId, receive
 };
 
 export const GetAllSuppliers = async () => {
-  const query = `SELECT id, name, contact_person FROM Supplier;`;
+  const query = `SELECT id, name FROM Supplier;`;
   return await ExecuteQuery(query);
 };
