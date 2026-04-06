@@ -29,7 +29,9 @@ export const ApproveHRRequest = async (data) => {
   } else {
     selectedWorkers = await repo.GetFirstAvailableWorkers(tableName, categoryId, quantity);
   }
-
+  console.log("Selected Workers:", selectedWorkers);
+  console.log("Requested Quantity:", quantity);
+  console.log("Category Type:", tableName);
   // Check agar quantity poori nahi hai
   if (categoryType !== 'Engineer' && selectedWorkers.length < quantity) {
     const error = new Error(`Maazrat! Sirf ${selectedWorkers.length} bande free hain. Request poori nahi ho sakti.`);
@@ -65,7 +67,7 @@ export const ApproveHRRequest = async (data) => {
   await CreatePaymentRequest(projectId, hrExpId, null, userId, totalAmount);
 
   // 6. Request Status Update
-  await repo.UpdateHRRequestStatus(requestId, 'Allocated');
+  await repo.UpdateHRRequestStatus(requestId, 'Approved');
 
   return { 
     success: true, 

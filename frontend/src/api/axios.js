@@ -64,6 +64,7 @@ export const hrAPI = {
   createRequest:      (data) => api.post("/hr/request", data),
   approveRequest:     (data) => api.post("/hr/approve", data),
   freeLabour:         (data) => api.post("/hr/free", data),
+  getAllAllocations:     ()     => api.get("/hr/allocations"),
 };
 
 export const materialAPI = {

@@ -13,7 +13,14 @@ export const GetAllHumanResources = async (req, res, next) => {
     next(error);
   }
 };
-
+export const GetAllAllocations = async (req, res) => {
+    try {
+        const result = await service.GetAllAllocations();
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 // --- 2. PM Action: HR Request Create Karna ---
 export const CreateHRRequest = async (req, res, next) => {
   try {

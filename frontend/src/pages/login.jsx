@@ -29,8 +29,8 @@ export default function Login() {
       const u = await login(form.username, form.password);
       const roleRoutes = {
         "Director":              "/dashboard",
-        "Finance Manager":       "/finance-dashboard",
-        "HR Manager":            "/hr-dashboard",
+        "Finance Officer":       "/finance-dashboard",
+        "HR Officer":            "/hr-dashboard",
         "Project Manager":       "/pm-dashboard",
         "Material Manager":      "/material-dashboard",
         "Equipment Manager":     "/equipment-dashboard",

@@ -24,7 +24,7 @@ export default function Sidebar() {
         return [
           { to: "/finance-dashboard", label: "Finance Dashboard" },
         ];
-      case "HR Manager":
+      case "HR Officer":
         return [
           { to: "/hr-dashboard", label: "HR Dashboard" },
         ];

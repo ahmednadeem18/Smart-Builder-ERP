@@ -33,7 +33,7 @@ export const GetFirstAvailableWorkers = async (tableName, categoryId, quantity) 
   const query = `
     SELECT hr_id, daily_wage 
     FROM ${tableName} 
-    WHERE category_id = ? AND allocation_id IS NULL AND status = 'Active'
+    WHERE category_id = ? AND allocation_id IS NULL AND status = 'Free'
     ORDER BY hr_id ASC
     LIMIT ?;`;
   return await ExecuteQuery(query, [categoryId, quantity]);
@@ -44,7 +44,7 @@ export const GetEngineersByCategory = async (categoryId) => {
   const query = `
     SELECT hr_id, (salary / 30) AS daily_wage 
     FROM Engineer 
-    WHERE category_id = ? AND status = 'Active';`;
+    WHERE category_id = ? ;`;
   return await ExecuteQuery(query, [categoryId]);
 };
 
@@ -52,14 +52,14 @@ export const GetEngineersByCategory = async (categoryId) => {
 
 export const CreateHRAllocationEntry = async (projectId, requestId, startDate, endDate, totalAmount) => {
   const query = `
-    INSERT INTO HR_Allocation (project_id, request_id, start_date, end_date, total_amount, status)
-    VALUES (?, ?, ?, ?, ?, 'Allocated');`;
+    INSERT INTO HR_Allocation (project_id, request_id, start_date, end_date, total_amount)
+    VALUES (?, ?, ?, ?, ?);`;
   return await ExecuteQuery(query, [projectId, requestId, startDate, endDate, totalAmount]);
 };
 
 export const UpdateWorkersAllocationID = async (tableName, workerIds, allocationId) => {
   // workerIds ek array hoga [1, 2, 3]
-  const query = `UPDATE ${tableName} SET allocation_id = ? WHERE hr_id IN (?);`;
+  const query = `UPDATE ${tableName} SET allocation_id = ? ,status = 'Allocated' WHERE hr_id IN (?);`;
   return await ExecuteQuery(query, [allocationId, workerIds]);
 };
 
@@ -80,11 +80,11 @@ export const GetHRExpenseCategoryId = async () => {
 
 export const GetAllActiveAllocations = async () => {
   const query = `
-    SELECT ha.*, p.project_name, har.category_type, har.category_id
+    SELECT ha.*, p.project_name, har.category_type, cat.name AS category_name
     FROM HR_Allocation ha
     JOIN Project p ON ha.project_id = p.id
     JOIN HR_Allocation_Request har ON ha.request_id = har.id
-    WHERE ha.status = 'Allocated';`;
+    JOIN HR_Category cat ON har.category_id = cat.id;`;
   return await ExecuteQuery(query);
 };
 
@@ -92,10 +92,7 @@ export const ReleaseLabourPool = async (allocationId, categoryType) => {
   const tableName = categoryType === 'Skilled' ? 'Skilled_Labour' : 'Unskilled_Labour';
   
   // 1. Labour ko free karna (allocation_id = NULL)
-  const freeLabourQuery = `UPDATE ${tableName} SET allocation_id = NULL WHERE allocation_id = ?;`;
+  const freeLabourQuery = `UPDATE ${tableName} SET allocation_id = NULL,status = 'Free' WHERE allocation_id = ?;`;
   await ExecuteQuery(freeLabourQuery, [allocationId]);
 
-  // 2. Allocation status complete karna
-  const closeAllocQuery = `UPDATE HR_Allocation SET status = 'Completed' WHERE id = ?;`;
-  return await ExecuteQuery(closeAllocQuery, [allocationId]);
 };

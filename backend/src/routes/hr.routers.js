@@ -7,12 +7,14 @@ const router = express.Router();
 
 // Sab routes ke liye token zaroori hai
 router.use(verifyToken);
-router.use(allowRoles("HR Manager", "Director"));
 
 router.get('/resources', controller.GetAllHumanResources);
 router.get('/requests/pending', controller.GetPendingRequests);
 router.post('/request', controller.CreateHRRequest);
 router.post('/approve', controller.ApproveHRRequest);
 router.post('/free', controller.FreeLabourAllocation);
+// --- View Active Allocations ---
+router.get('/allocations', controller.GetAllAllocations);
+
 
 export default router;
