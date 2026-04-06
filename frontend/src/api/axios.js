@@ -79,13 +79,11 @@ export const materialAPI = {
 };
 
 export const equipmentAPI = {
-  getAll:             ()     => api.get("/equipment/all"),
-  getRented:          ()     => api.get("/equipment/rented"),
-  getOwned:           ()     => api.get("/equipment/owned"),
-  getPendingRequests: ()     => api.get("/equipment/requests/pending"),
-  approveRequest:     (data) => api.post("/equipment/approve", data),
+  getPendingRequests: () => api.get("/equipment/pending"),
+  getActiveAllocations: () => api.get("/equipment/active"),
+  approveRequest: (data) => api.post("/equipment/approve", data),
+  releaseEquipment: (data) => api.post("/equipment/release", data),
 };
-
 export const pmAPI = {
   getMyProjects:  ()           => api.get("/pm/projects"),
   getProjectLogs: (projectId)  => api.get(`/pm/project/logs/${projectId}`),

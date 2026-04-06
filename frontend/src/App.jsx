@@ -14,6 +14,7 @@ import Unauthorized from "./pages/Unauthorized";
 import SubDashboard from "./Managers/Subdashboard";
 import MaterialDashboard from "./Managers/MaterialDashboard";
 import HRDashboard from "./Managers/HRDashboard";
+import EquipmentDashboard from "./Managers/EquipmentDashboard";
 function App() {
   return (
     <BrowserRouter>
@@ -43,6 +44,7 @@ function App() {
             <Route path="subcontractor-dashboard" element={<SubDashboard />} />
             <Route path="hr-dashboard" element={<HRDashboard />} />
             <Route path="material-dashboard" element={<MaterialDashboard />} />
+            <Route path="equipment-dashboard" element={<EquipmentDashboard />} />
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/:id" element={<ProjectDetail />} />

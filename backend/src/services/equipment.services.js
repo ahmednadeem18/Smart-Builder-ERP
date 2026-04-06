@@ -12,50 +12,9 @@ export const GetOwnedEquipments = async () => {
   return await repo.GetOwnedEquipments();
 };
 
-/**
- * Main Logic for Approving Equipment Requests
- * Handles both Company-Owned and Rented workflows
- */
-export const ApproveEquipmentRequest = async (requestId, equipmentId, projectId, startDate, endDate) => {
-  // 1. Get equipment details to check ownership
-  const allEquipments = await repo.GetAllEquipments();
-  const selectedEquipment = allEquipments.find(e => e.id === equipmentId);
 
-  if (!selectedEquipment || selectedEquipment.status !== 'Available') {
-    const error = new Error('Equipment is not available for allocation.');
-    error.status = 400;
-    throw error;
-  }
-
-  // 2. Create the Allocation (This triggers the DB status change to 'In-use')
-  const allocation = await repo.CreateEquipmentAllocation(equipmentId, projectId, requestId, startDate);
-
-  // 3. Handle Financials if the equipment is Rented
-  if (selectedEquipment.ownership_type === 'Rented') {
-    const [rentalInfo] = await repo.GetRentalRateAndAccount(equipmentId);
-    
-    if (rentalInfo) {
-      // Calculate duration in days (including start and end date)
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const diffTime = Math.abs(end - start);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-      const totalCost = diffDays * rentalInfo.daily_rate;
-      const categoryId = await repo.GetEquipmentCategoryId();
-
-      // Send the bill to the Finance Manager
-      await repo.CreatePaymentRequest(projectId, categoryId, rentalInfo.account_id, totalCost);
-    }
-  }
-
-  // 4. Update the Request status to 'Approved'
-  await repo.UpdateRequestStatus(requestId, 'Approved');
-
-  return { 
-    message: `Request ${requestId} approved. ${selectedEquipment.ownership_type} equipment allocated.`,
-    allocationId: allocation.insertId 
-  };
+export const SendRequest = async (data) => {
+    return await repo.CreateAllocationRequest(data.projectId, data.userId, data.categoryId);
 };
 
 /**
@@ -63,4 +22,59 @@ export const ApproveEquipmentRequest = async (requestId, equipmentId, projectId,
  */
 export const GetPendingRequests = async () => {
   return await repo.GetPendingEquipmentRequests();
+};
+
+
+export const ApproveEquipmentRequest = async (data) => {
+    const { requestId, projectId, categoryId, days, userId } = data;
+
+    // 1. Available Machine Check
+    const equipment = await repo.FindAvailableEquipment(categoryId);
+    if (!equipment) throw new Error("Bhai, is category ki koi machine is waqt free nahi hai!");
+
+    // 2. Dates setup
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(startDate.getDate() + parseInt(days));
+
+    // 3. Rental Payment Logic (If Rented)
+    if (equipment.ownership_type === 'Rented') {
+        const rental = await repo.GetRentalRate(equipment.id);
+        
+        if (rental && rental.total_days > 0) {
+            // Rent Calculation: (Total / Contract Days) * Allocated Days
+            const perDayRate = rental.total_rent / rental.total_days;
+            const finalAmount = perDayRate * days;
+            
+            const expenseId = await repo.GetEquipExpenseId();
+            
+            // Payment Request create karna
+            await repo.CreateEquipmentPaymentRequest(
+                projectId, 
+                expenseId, 
+                rental.renter_id, 
+                userId, 
+                finalAmount
+            );
+        }
+    }
+
+    // 4. Finalize Database State
+    await repo.SaveAllocation(equipment.id, projectId, requestId, startDate, endDate);
+    await repo.UpdateRequestStatus(requestId, 'Approved');
+
+    return { success: true, message: `${equipment.name} allocate ho gaya hai.` };
+};
+
+export const ReleaseEquipmentToPool = async (equipmentId) => {
+    await repo.UpdateEquipmentStatus(equipmentId, 'Available');
+    return { success: true, message: "Equipment ab pool mein wapas aa gaya hai." };
+};
+
+export const FetchPendingRequests = async () => {
+    return await repo.GetPendingEquipmentRequests();
+};
+
+export const FetchActiveAllocations = async () => {
+    return await repo.GetActiveAllocations();
 };
