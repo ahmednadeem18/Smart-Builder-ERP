@@ -67,7 +67,7 @@ export const ApproveEquipmentRequest = async (data) => {
 };
 
 export const ReleaseEquipmentToPool = async (equipmentId) => {
-    await repo.UpdateEquipmentStatus(equipmentId, 'Available');
+    await repo.UpdateToAvailable(equipmentId, 'Available');
     return { success: true, message: "Equipment ab pool mein wapas aa gaya hai." };
 };
 

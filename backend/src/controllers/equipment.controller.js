@@ -118,6 +118,7 @@ export const Release = async (req, res) => {
         const result = await service.ReleaseEquipmentToPool(equipmentId);
         res.status(200).json(result);
     } catch (error) {
+        console.error("Release Error:", error.message);
         res.status(500).json({ success: false, message: error.message });
     }
 };
