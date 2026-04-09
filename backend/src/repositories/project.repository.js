@@ -319,26 +319,29 @@ export const GetProjectFullReport = async (id) => {
   `, [id]);
     //console.log("Project result:", project);
   // Workers 1
-  const [workers] = await db.query(`
-    SELECT
-      hr.name, hr.gender,
-      CASE
-        WHEN sl.hr_id IS NOT NULL THEN 'Skilled Labour'
-        WHEN ul.hr_id IS NOT NULL THEN 'Unskilled Labour'
-        WHEN e.hr_id  IS NOT NULL THEN 'Engineer'
-        ELSE 'Unknown'
-      END AS type,
-      COALESCE(sl.daily_wage, ul.daily_wage, e.salary) AS rate,
-      ha.start_date, ha.end_date,
-      COALESCE(sl.status, ul.status) AS status
-    FROM HR_Allocation ha
-    JOIN Human_Resource hr ON ha.hr_id = hr.id
-    LEFT JOIN Skilled_Labour sl   ON sl.hr_id = hr.id
+const [workers] = await db.query(`
+    SELECT 
+        hr.name, 
+        hr.gender,
+        CASE 
+            WHEN sl.hr_id IS NOT NULL THEN 'Skilled Labour'
+            WHEN ul.hr_id IS NOT NULL THEN 'Unskilled Labour'
+            WHEN e.hr_id IS NOT NULL THEN 'Engineer'
+            ELSE 'Unknown'
+        END AS type,
+        COALESCE(sl.daily_wage, ul.daily_wage, e.salary) AS rate,
+        ha.start_date, 
+        ha.end_date,
+        COALESCE(sl.status, ul.status, 'Allocated') AS status 
+    FROM Human_Resource hr
+    -- Labour tables ko join kiya hr_id ke base par
+    LEFT JOIN Skilled_Labour sl ON sl.hr_id = hr.id
     LEFT JOIN Unskilled_Labour ul ON ul.hr_id = hr.id
-    LEFT JOIN Engineer e          ON e.hr_id  = hr.id
+    LEFT JOIN Engineer e ON e.hr_id = hr.id
+    -- HR_Allocation ko join kiya un tables ke allocation_id se jahan wo exist karta hai
+    JOIN HR_Allocation ha ON ha.id = COALESCE(sl.allocation_id, ul.allocation_id)
     WHERE ha.project_id = ?
-  `, [id]);
-  // console.log("workers result:", workers);
+`, [id]);
 
   // Equipment
   const [equipment] = await db.query(`
