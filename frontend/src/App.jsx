@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/layouts/projectroute";
 import Layout from "./components/layouts/Layout";
 import Login from "./pages/login";
 import ChangePassword from "./pages/ChangePassword";
+import PMDashboard from "./Managers/PMDashboard";
 import Clients from "./pages/Clients";
 import Equipment from "./pages/Equipment";
 import Finance from "./pages/Finance";
@@ -15,6 +16,7 @@ import SubDashboard from "./Managers/Subdashboard";
 import MaterialDashboard from "./Managers/MaterialDashboard";
 import HRDashboard from "./Managers/HRDashboard";
 import EquipmentDashboard from "./Managers/EquipmentDashboard";
+import FinanceDashboard from "./Managers/FinanceManager";
 function App() {
   return (
     <BrowserRouter>
@@ -48,8 +50,10 @@ function App() {
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
+            <Route path="pm-dashboard" element={<PMDashboard />} />
             <Route path="clients" element={<Clients />} />
             <Route path="finance" element={<Finance />} />
+            <Route path="finance-dashboard" element={<FinanceDashboard/>}/>
             <Route path="equipment" element={<Equipment />} />
             
           </Route>

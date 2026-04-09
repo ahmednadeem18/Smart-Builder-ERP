@@ -27,7 +27,9 @@ app.use(express.json());
 app.use(express.static("public"));
 
 const allowedOrigins = [
+  
   "http://localhost:5173",
+  "http://localhost:5175",
   "https://smartbuildererp.vercel.app"
 ];
 
@@ -55,6 +57,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use('/api/v1/equipment', equipmentRoutes);
 app.use('/api/v1/material', materialRoutes);
 app.use('/api/v1/admin/finance', financeRoutes);
+app.use('/api/v1/finance', financeRoutes);
 app.use('/api/v1/subcontractor', subcontractorRoutes);
 app.use('/api/v1/pm', pmRoutes);
 app.use('/api/v1/hr', hrRoutes);

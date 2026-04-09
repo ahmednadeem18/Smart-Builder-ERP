@@ -18,7 +18,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      // window.location.href = "/login";
+
     }
     return Promise.reject(error);
   }
@@ -48,14 +49,13 @@ export const clientAPI = {
   getInvoices: (id) => api.get(`/admin/clients/${id}/invoices`),
   create: (data) => api.post("/admin/clients", data),
 };
-
 export const financeAPI = {
-  getExpenses:        ()    => api.get("/admin/finance/expenses"),
-  getRevenues:        ()    => api.get("/admin/finance/revenues"),
-  getPendingPayments: ()    => api.get("/admin/finance/payments/pending"),
-  getPendingInvoices: ()    => api.get("/admin/finance/invoices/pending"),
-  approvePayment:     (id)  => api.post(`/admin/finance/payment/approve/${id}`),
-  approveInvoice:     (id)  => api.post(`/admin/finance/invoice/approve/${id}`),
+  getExpenses:        ()    => api.get("/finance/expenses"),
+  getRevenues:        ()    => api.get("/finance/revenues"),
+  getPendingPayments: ()    => api.get("/finance/payments/pending"),
+  getPendingInvoices: ()    => api.get("/finance/invoices/pending"),
+  approvePayment:     (id)  => api.post(`/finance/payment/approve/${id}`),
+  approveInvoice:     (id)  => api.post(`/finance/invoice/approve/${id}`),
 };
 
 export const hrAPI = {

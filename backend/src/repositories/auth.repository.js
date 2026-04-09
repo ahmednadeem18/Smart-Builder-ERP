@@ -14,7 +14,7 @@ export const GetUserForLogin = async (username, password) => {
     AND u.password = ?`;
 
   const result = await ExecuteQuery(query, [username, password]);
-
+  console.log(result);
   return result[0];
 };
 

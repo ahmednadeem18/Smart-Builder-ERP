@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { adminAPI } from "../api/axios";
+import { useAuth } from "../context/authcontext";
+
+
 
 function Section({ title, children }) {
         return (
@@ -71,6 +74,15 @@ export default function ProjectDetail() {
         const actual = report.expenses.reduce((sum, e) => sum + Number(e.total), 0);
         const variance = planned - actual;
         const isProfit = variance >= 0;
+        const { user } = useAuth();
+
+        const handleBack = () => {
+        if (user?.role === "Project Manager") {
+        navigate("/pm-dashboard");
+        } else {
+        navigate("/projects");
+        }
+        };
 
         const handleDownloadPDF = () => {
                 const doc = new jsPDF("p", "mm", "a4");
@@ -235,7 +247,7 @@ export default function ProjectDetail() {
                                 gap: "16px",
                                 marginBottom: "8px"
                         }}>
-                                <button className="btn-outline no-print" onClick={() => navigate("/projects")}>
+                                <button className="btn-outline no-print" onClick={handleBack}>
                                         Back
                                 </button>
                                 <div style={{ flex: 1 }}>

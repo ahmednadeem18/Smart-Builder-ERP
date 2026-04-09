@@ -6,7 +6,7 @@ import { allowRoles } from '../middleware/rbac.middleware.js';
 const router = express.Router();
 
 router.use(verifyToken);
-router.use(allowRoles("Finance Manager", "Director"));
+router.use(allowRoles("Finance Officer", "Director"));
 
 /** @route GET /api/finance/expenses */
 router.get('/expenses', controller.GetAllExpenses);

@@ -301,3 +301,9 @@ DESCRIBE Project_Budget;
 SELECT * FROM Project_Budget;
 
 DESCRIBE Client;
+
+select * from User;
+
+update User
+set password = 'bilal123'
+where username = 'bilal_finance';

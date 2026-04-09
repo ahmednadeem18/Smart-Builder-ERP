@@ -13,16 +13,16 @@ export default function Sidebar() {
           { to: "/projects",  label: "Projects" },
           { to: "/clients",   label: "Clients" },
           { to: "/finance",   label: "Finance" },
-          { to: "/equipment", label: "Equipment" },
+          { to: "/equipment-dashboard", label: "Equipment" },
         ];
       case "Sub Contractor Manager":
         return [
           { to: "/subcontractor-dashboard", label: "Subcontractor Requests" },
           // Agar isko aur kuch dikhana ho to yahan add kar sakte hain
         ];
-      case "Finance Manager":
+      case "Finance Officer":
         return [
-          { to: "/finance-dashboard", label: "Finance Dashboard" },
+          { to: "/finance-dashboard", label: "Dashboard" },
         ];
       case "HR Officer":
         return [
@@ -31,6 +31,10 @@ export default function Sidebar() {
       case "Material Manager":
       return [
         { to: "/material-dashboard", label: "Material Management" },
+      ];
+      case "Project Manager":
+      return [
+        { to: "/pm-dashboard",    label: "My Projects" },
       ];
       default:
         // Agar koi aur role hai to by default sirf dashboard dikhega

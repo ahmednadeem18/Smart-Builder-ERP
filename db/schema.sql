@@ -648,3 +648,23 @@ DESCRIBE Payment_Request;
 SELECT * FROM Progress_Log;
 
 SELECT * FROM User;
+
+SELECT
+      hr.name, hr.gender,
+      CASE
+        WHEN sl.hr_id IS NOT NULL THEN 'Skilled Labour'
+        WHEN ul.hr_id IS NOT NULL THEN 'Unskilled Labour'
+        WHEN e.hr_id  IS NOT NULL THEN 'Engineer'
+        ELSE 'Unknown'
+      END AS type,
+      COALESCE(sl.daily_wage, ul.daily_wage, e.salary) AS rate,
+      ha.start_date, ha.end_date,
+      COALESCE(sl.status, ul.status) AS status
+    FROM HR_Allocation ha
+    JOIN Human_Resource hr ON ha.hr_id = hr.id
+    LEFT JOIN Skilled_Labour sl   ON sl.hr_id = hr.id
+    LEFT JOIN Unskilled_Labour ul ON ul.hr_id = hr.id
+    LEFT JOIN Engineer e          ON e.hr_id  = hr.id
+    WHERE ha.project_id = 1;
+
+    SELECT DISTINCT name FROM Role;
