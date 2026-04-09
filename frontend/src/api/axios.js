@@ -89,6 +89,7 @@ export const pmAPI = {
   getProjectLogs: (projectId)  => api.get(`/pm/project/logs/${projectId}`),
   addLog:         (data)       => api.post("/pm/log", data),
   submitRequest:  (type, data) => api.post(`/pm/request/${type}`, data),
+  getCategories: (type) => api.get(`/pm/categories/${type}`),
 };
 
 export const subcontractorAPI = {

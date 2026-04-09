@@ -26,4 +26,5 @@ router.post('/log',verifyToken, allowRoles("Project Manager"), controller.AddPro
 */
 router.post('/request/:type', verifyToken, allowRoles("Project Manager"), controller.SubmitResourceRequest);
 
+router.get('/categories/:type', verifyToken, allowRoles("Project Manager"), controller.GetCategories);
 export default router;

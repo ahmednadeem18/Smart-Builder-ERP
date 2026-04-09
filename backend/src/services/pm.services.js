@@ -1,20 +1,13 @@
 import * as repo from '../repositories/pm.repository.js';
 
-/*Fetches all projects assigned to a specific PM.
- */
 export const GetMyProjects = async (managerId) => {
   return await repo.GetAssignedProjects(managerId);
 };
 
-
-/*Retrieves the timeline/history of logs for a project.
- */
 export const GetProjectHistory = async (projectId) => {
   return await repo.GetProjectLogs(projectId);
 };
 
-/*ADD LOG PROGRESS
- */
 export const AddProgressUpdate = async (projectId, logText) => {
   if (!logText || logText.trim().length < 10) {
     const error = new Error("Progress log is too short. Please provide more detail.");
@@ -23,13 +16,12 @@ export const AddProgressUpdate = async (projectId, logText) => {
   }
   return await repo.CreateProgressLog(projectId, logText);
 };
-
-/*his handles Materials, HR, Equipment, and Subcontractors.
- */
+export const FetchCategories = async (type) => {
+    return await repo.GetCategoriesByType(type);
+};
 export const SubmitResourceRequest = async (type, data) => {
-  const { projectId, categoryId, userId, quantity } = data;
+  const { projectId, categoryId, userId, quantity, categoryType } = data;
 
-  // Validation: Ensure we have a project and a user
   if (!projectId || !userId) {
     const error = new Error("Missing Project ID or User ID for the request.");
     error.status = 400;
@@ -46,7 +38,19 @@ export const SubmitResourceRequest = async (type, data) => {
       return await repo.RequestMaterials(projectId, categoryId, userId, quantity);
 
     case 'hr':
-      return await repo.RequestHR(projectId, categoryId, userId);
+      // HR Request Validation: Ensure quantity and categoryType are present
+      if (!quantity || quantity <= 0) {
+        const error = new Error("Please specify the number of workers needed.");
+        error.status = 400;
+        throw error;
+      }
+      if (!categoryType) {
+        const error = new Error("Please specify if it's Skilled, Unskilled, or Engineer.");
+        error.status = 400;
+        throw error;
+      }
+      // Passing all 5 parameters to match the repo function
+      return await repo.RequestHR(projectId, categoryId, categoryType, quantity, userId);
 
     case 'equipment':
       return await repo.RequestEquipment(projectId, categoryId, userId);

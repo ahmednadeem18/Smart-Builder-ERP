@@ -59,3 +59,13 @@ export const SubmitResourceRequest = async (req, res, next) => {
     });
   } catch (error) { next(error); }
 };
+export const GetCategories = async (req, res) => {
+    try {
+        const { type } = req.params;
+        const data = await service.FetchCategories(type);
+        res.status(200).json({ success: true, data });
+    } catch (error) {
+        console.error("❌ Controller Error:", error.message);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
