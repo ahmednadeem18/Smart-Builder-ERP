@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authcontext";
 import { pmAPI, adminAPI } from "../api/axios";
-
+import React from "react";
 function Badge({ status }) {
   const styles = {
     Ongoing: { color: "#2563eb", background: "#eff6ff" },
@@ -222,138 +222,137 @@ export default function PMDashboard() {
       </div>
 
       {/* Projects Tab */}
-      {tab === "projects" && (
-        <div className="table-card">
-          <h3 className="table-title">Assigned Projects</h3>
-          {projects.length === 0 ? (
-            <p className="empty">No projects assigned.</p>
-          ) : (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Project Name</th>
-                  <th>Client</th>
-                  <th>Start Date</th>
-                  <th>Status</th>
-                  <th>Logs</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((p, i) => (
-                  <>
-                    <tr key={p.id}>
-                      <td style={{ color: "#94a3b8" }}>{i + 1}</td>
-                      <td
-                        style={{
-                          fontWeight: 500,
-                          color: "#0a7073",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => navigate(`/projects/${p.id}`)}
-                      >
-                        {p.project_name}
-                      </td>{" "}
-                      <td>{p.client_name}</td>
-                      <td>{p.start_date?.slice(0, 10)}</td>
-                      <td>
-                        <Badge status={p.status} />
-                      </td>
-                      <td>
-                        <button
-                          className="btn-outline"
-                          onClick={() => handleSelectProject(p)}
-                        >
-                          {selected?.id === p.id ? "Hide" : "View Logs"}
-                        </button>
-                      </td>
-                    </tr>
+     {tab === "projects" && (
+  <div className="table-card">
+    <h3 className="table-title">Assigned Projects</h3>
+    {projects.length === 0 ? (
+      <p className="empty">No projects assigned.</p>
+    ) : (
+      <table className="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Project Name</th>
+            <th>Client</th>
+            <th>Start Date</th>
+            <th>Status</th>
+            <th>Logs</th>
+          </tr>
+        </thead>
+        <tbody>
+          {projects.map((p, i) => (
+            /* FIX 1: Use React.Fragment with a key instead of <> */
+            <React.Fragment key={p.id}>
+              <tr>
+                <td style={{ color: "#94a3b8" }}>{i + 1}</td>
+                <td
+                  style={{
+                    fontWeight: 500,
+                    color: "#0a7073",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => navigate(`/projects/${p.id}`)}
+                >
+                  {p.project_name}
+                </td>
+                {/* FIX 2: Removed {" "} and extra spaces between <td> tags */}
+                <td>{p.client_name}</td>
+                <td>{p.start_date?.slice(0, 10)}</td>
+                <td>
+                  <Badge status={p.status} />
+                </td>
+                <td>
+                  <button
+                    className="btn-outline"
+                    onClick={() => handleSelectProject(p)}
+                  >
+                    {selected?.id === p.id ? "Hide" : "View Logs"}
+                  </button>
+                </td>
+              </tr>
 
-                    {selected?.id === p.id && (
-                      <tr key={`logs-${p.id}`}>
-                        <td
-                          colSpan={6}
+              {selected?.id === p.id && (
+                <tr key={`logs-row-${p.id}`}>
+                  <td
+                    colSpan={6}
+                    style={{
+                      background: "#f8fafc",
+                      padding: "16px 20px",
+                    }}
+                  >
+                    {/* Add log form */}
+                    <form
+                      onSubmit={handleAddLog}
+                      style={{
+                        marginBottom: "16px",
+                        display: "flex",
+                        gap: "8px",
+                      }}
+                    >
+                      <input
+                        value={logText}
+                        onChange={(e) => setLogText(e.target.value)}
+                        placeholder="Add a progress update..."
+                        style={{
+                          flex: 1,
+                          padding: "8px 12px",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: "8px",
+                          fontSize: "13px",
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        className="btn-primary"
+                        disabled={logLoading}
+                      >
+                        {logLoading ? "Adding..." : "Add Log"}
+                      </button>
+                    </form>
+                    
+                    {logError && <p className="error">{logError}</p>}
+                    {logSuccess && <p className="success">{logSuccess}</p>}
+
+                    {/* Log history */}
+                    {logs.length === 0 ? (
+                      <p className="empty">No logs yet.</p>
+                    ) : (
+                      logs.map((log) => (
+                        <div
+                          key={log.id}
                           style={{
-                            background: "#f8fafc",
-                            padding: "16px 20px",
+                            padding: "10px 14px",
+                            background: "#fff",
+                            borderRadius: "8px",
+                            border: "1px solid #e2e8f0",
+                            marginBottom: "8px",
                           }}
                         >
-                          {/* Add log form */}
-                          <form
-                            onSubmit={handleAddLog}
+                          <p style={{ fontSize: "13px", color: "#334155" }}>
+                            {log.log_text}
+                          </p>
+                          <p
                             style={{
-                              marginBottom: "16px",
-                              display: "flex",
-                              gap: "8px",
+                              fontSize: "11px",
+                              color: "#94a3b8",
+                              marginTop: "4px",
                             }}
                           >
-                            <input
-                              value={logText}
-                              onChange={(e) => setLogText(e.target.value)}
-                              placeholder="Add a progress update..."
-                              style={{
-                                flex: 1,
-                                padding: "8px 12px",
-                                border: "1px solid #e2e8f0",
-                                borderRadius: "8px",
-                                fontSize: "13px",
-                              }}
-                            />
-                            <button
-                              type="submit"
-                              className="btn-primary"
-                              disabled={logLoading}
-                            >
-                              {logLoading ? "Adding..." : "Add Log"}
-                            </button>
-                          </form>
-                          {logError && <p className="error">{logError}</p>}
-                          {logSuccess && (
-                            <p className="success">{logSuccess}</p>
-                          )}
-
-                          {/* Log history */}
-                          {logs.length === 0 ? (
-                            <p className="empty">No logs yet.</p>
-                          ) : (
-                            logs.map((log, i) => (
-                              <div
-                                key={log.id}
-                                style={{
-                                  padding: "10px 14px",
-                                  background: "#fff",
-                                  borderRadius: "8px",
-                                  border: "1px solid #e2e8f0",
-                                  marginBottom: "8px",
-                                }}
-                              >
-                                <p
-                                  style={{ fontSize: "13px", color: "#334155" }}
-                                >
-                                  {log.log_text}
-                                </p>
-                                <p
-                                  style={{
-                                    fontSize: "11px",
-                                    color: "#94a3b8",
-                                    marginTop: "4px",
-                                  }}
-                                >
-                                  {log.log_date?.slice(0, 10)}
-                                </p>
-                              </div>
-                            ))
-                          )}
-                        </td>
-                      </tr>
+                            {log.log_date?.slice(0, 10)}
+                          </p>
+                        </div>
+                      ))
                     )}
-                  </>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      )}
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </div>
+)}
 
       {/* Request Resources Tab */}
       {tab === "request" && (
