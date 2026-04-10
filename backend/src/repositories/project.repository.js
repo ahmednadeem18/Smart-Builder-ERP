@@ -305,7 +305,7 @@ export const GetProjectFullReport = async (id) => {
   const [hrAllocations] = await db.query(
     `
     SELECT 
-        har.id AS request_id,
+        ha.id AS allocation_id,
         hc.name AS category_name,
         har.category_type,
         har.quantity,
@@ -313,11 +313,11 @@ export const GetProjectFullReport = async (id) => {
         ha.start_date,
         ha.end_date,
         ha.total_amount
-    FROM HR_Allocation_Request har
+    FROM HR_Allocation ha
+    -- Inner Join taaki sirf allocated data aaye
+    JOIN HR_Allocation_Request har ON ha.request_id = har.id
     JOIN HR_Category hc ON hc.id = har.category_id
-    -- LEFT JOIN kyunke ho sakta hai request Pending ho aur Allocation table mein entry na ho
-    LEFT JOIN HR_Allocation ha ON ha.request_id = har.id
-    WHERE har.project_id = ?
+    WHERE ha.project_id = ?
 `,
     [id],
   );
@@ -385,7 +385,7 @@ export const GetProjectFullReport = async (id) => {
 
   return {
     project: project[0],
-    workers:hrAllocations,
+    workers: hrAllocations,
     equipment,
     materials,
     subcontractors,

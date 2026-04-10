@@ -407,46 +407,49 @@ export default function ProjectDetail() {
         )}
       </Section>
 
-      {/* Workers */}
-      {/* Workers / HR Allocations Section */}
-      <Section title={`HR Allocations (${report.workers.length})`}>
-        {report.workers.length === 0 ? (
-          <p className="empty">No HR allocations found.</p>
-        ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Type</th>
-                <th>Quantity</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {report.workers.map((w, i) => (
-                <tr key={i}>
-                  <td style={{ fontWeight: 500 }}>{w.category_name}</td>
-                  <td>{w.category_type}</td>
-                  <td>{w.quantity}</td>
-                  <td>{w.start_date?.slice(0, 10) ?? "—"}</td>
-                  <td>{w.end_date?.slice(0, 10) ?? "Active"}</td>
-                  <td style={{ fontWeight: 600 }}>
-                    {w.total_amount
-                      ? `PKR ${Number(w.total_amount).toLocaleString()}`
-                      : "Pending"}
-                  </td>
-                  <td>
-                    <StatusBadge status={w.request_status} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </Section>
+      {/* HR Allocations Section */}
+<Section title={`HR Allocations (${report.workers.length})`}>
+  {report.workers.length === 0 ? (
+    <p className="empty">No HR allocations found.</p>
+  ) : (
+    <table className="table">
+      <thead>
+        <tr>
+          {/* 1. Headers ko update kiya */}
+          <th>Category</th>
+          <th>Type</th>
+          <th>Quantity</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Total Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {report.workers.map((w, i) => (
+          <tr key={i}>
+            {/* 2. Nayi keys: category_name, category_type, quantity, total_amount */}
+            <td style={{ fontWeight: 500 }}>{w.category_name}</td>
+            <td>{w.category_type}</td>
+            <td>{w.quantity}</td>
+            <td>{w.start_date?.slice(0, 10) ?? "—"}</td>
+            <td>{w.end_date?.slice(0, 10) ?? "Active"}</td>
+            <td style={{ fontWeight: 600 }}>
+              {/* NaN se bachne ke liye check: agar amount hai toh dikhao warna Pending */}
+              {w.total_amount 
+                ? `PKR ${Number(w.total_amount).toLocaleString()}` 
+                : "Pending"}
+            </td>
+            <td>
+              {/* status ki jagah request_status use karein jo backend se aa raha hai */}
+              <StatusBadge status={w.request_status} />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</Section>
 
       {/* Equipment */}
       <Section title={`Equipment (${report.equipment.length})`}>
