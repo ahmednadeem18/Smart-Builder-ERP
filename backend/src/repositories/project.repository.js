@@ -1,6 +1,5 @@
-import db from '../../config/db.js'
-import { ExecuteQuery } from '../../utils/queryhandler.js';
-
+import db from "../../config/db.js";
+import { ExecuteQuery } from "../../utils/queryhandler.js";
 
 /*
  this query will be used at Admin Dashboard, there will
@@ -22,16 +21,14 @@ export const GetAllProjects = async () => {
             JOIN User d ON p.director_id = d.id
             JOIN User m ON p.manager_id = m.id `;
   return ExecuteQuery(query);
-}
-
+};
 
 /*
  this query will be used at Admin Dashboard, it will be 
  showing the ongoing projects
 */
 export const GetAllOngoingProjects = async () => {
- 
-    const query = `
+  const query = `
         SELECT 
               p.id,
               p.project_name,
@@ -46,8 +43,8 @@ export const GetAllOngoingProjects = async () => {
             JOIN User d ON p.director_id = d.id
             JOIN User m ON p.manager_id = m.id
             WHERE p.status = 'Ongoing'; `;
-  return ExecuteQuery(query);   
-}
+  return ExecuteQuery(query);
+};
 
 /*
   this query will provide tow things, 
@@ -84,7 +81,7 @@ export const GetProjectBudgetOverview = async (id) => {
         pb.equipment_rent,
         pb.subcontractor_cost`;
   return ExecuteQuery(query, id);
-}
+};
 /*
   this query will provide tow things, 
 
@@ -98,7 +95,6 @@ export const GetProjectBudgetOverview = async (id) => {
     budgets or all bidgets
 */
 export const GetOverviewOfAllProjects = async () => {
-
   const query = `
     SELECT
         COUNT(DISTINCT p.id) AS total_projects,
@@ -116,12 +112,11 @@ export const GetOverviewOfAllProjects = async () => {
 
   `;
   return ExecuteQuery(query);
-}
-
+};
 
 /*
   Create new project
-*/export const CreateProjectWithBudget = async (
+*/ export const CreateProjectWithBudget = async (
   project_name,
   director_id,
   manager_id,
@@ -130,13 +125,11 @@ export const GetOverviewOfAllProjects = async () => {
   labour_cost,
   material_cost,
   equipment_rent,
-  subcontractor_cost
+  subcontractor_cost,
 ) => {
-
   const conn = await db.getConnection();
 
   try {
-
     await conn.beginTransaction();
 
     const budgetQuery = `
@@ -149,7 +142,7 @@ export const GetOverviewOfAllProjects = async () => {
       labour_cost,
       material_cost,
       equipment_rent,
-      subcontractor_cost
+      subcontractor_cost,
     ]);
 
     const budget_id = budgetResult.insertId;
@@ -166,32 +159,25 @@ export const GetOverviewOfAllProjects = async () => {
       manager_id,
       budget_id,
       client_id,
-      start_date
+      start_date,
     ]);
 
     await conn.commit();
 
     return {
       success: true,
-      budget_id
+      budget_id,
     };
-
   } catch (error) {
-
     await conn.rollback();
 
     throw error;
-
   } finally {
-
     conn.release();
-
   }
-
 };
 
 export const UpdateProjectStatus = async (project_id, status) => {
-
   const conn = await db.getConnection();
 
   try {
@@ -202,12 +188,12 @@ export const UpdateProjectStatus = async (project_id, status) => {
       `UPDATE Project
        SET status = ?
        WHERE id = ?`,
-      [status, project_id]
+      [status, project_id],
     );
 
     if (status === "Completed") {
-
-      await conn.query(`
+      await conn.query(
+        `
         UPDATE Skilled_Labour
         SET status = 'Free'
         WHERE hr_id IN (
@@ -215,9 +201,12 @@ export const UpdateProjectStatus = async (project_id, status) => {
           FROM HR_Allocation
           WHERE project_id = ?
         )
-      `, [project_id]);
+      `,
+        [project_id],
+      );
 
-      await conn.query(`
+      await conn.query(
+        `
         UPDATE Unskilled_Labour
         SET status = 'Free'
         WHERE hr_id IN (
@@ -225,32 +214,30 @@ export const UpdateProjectStatus = async (project_id, status) => {
           FROM HR_Allocation
           WHERE project_id = ?
         )
-      `, [project_id]);
+      `,
+        [project_id],
+      );
 
-      await conn.query(`
+      await conn.query(
+        `
         UPDATE HR_Allocation
         SET end_date = CURDATE()
         WHERE project_id = ?
         AND end_date IS NULL
-      `, [project_id]);
-
+      `,
+        [project_id],
+      );
     }
 
     await conn.commit();
 
     return { success: true };
-
   } catch (error) {
-
     await conn.rollback();
     throw error;
-
   } finally {
-
     conn.release();
-
   }
-
 };
 
 export const GetDashboardOverview = async () => {
@@ -266,18 +253,14 @@ export const GetDashboardOverview = async () => {
   return rows[0];
 };
 
-
 // helper queries
 
 export const CheckClientExists = async (client_id) => {
-
   const query = `SELECT id FROM Client WHERE id=?`;
   return await ExecuteQuery(query, [client_id]);
-
 };
 
 export const CheckManagerExists = async (manager_id) => {
-
   const query = `
       SELECT u.id
       FROM User u
@@ -286,14 +269,11 @@ export const CheckManagerExists = async (manager_id) => {
       WHERE u.id = ?
       AND r.name = 'Project Manager'`;
   return await ExecuteQuery(query, [manager_id]);
-
 };
 
 export const CheckBudgetExists = async (budget_id) => {
-
   const query = `SELECT id FROM Project_Budget WHERE id=?`;
   return await ExecuteQuery(query, [budget_id]);
-
 };
 
 export const GetProjectFullReport = async (id) => {
@@ -301,7 +281,8 @@ export const GetProjectFullReport = async (id) => {
   //console.log("Getting report for project id:", id, typeof id);
 
   // Basic project info + budget
-  const [project] = await db.query(`
+  const [project] = await db.query(
+    `
     SELECT
       p.id, p.project_name, p.start_date, p.end_date, p.status,
       c.name AS client_name,
@@ -316,35 +297,33 @@ export const GetProjectFullReport = async (id) => {
     JOIN User m ON p.manager_id = m.id
     JOIN Project_Budget pb ON p.budget_id = pb.id
     WHERE p.id = ?
-  `, [id]);
-    //console.log("Project result:", project);
+  `,
+    [id],
+  );
+  //console.log("Project result:", project);
   // Workers 1
-const [workers] = await db.query(`
+  const [hrAllocations] = await db.query(
+    `
     SELECT 
-        hr.name, 
-        hr.gender,
-        CASE 
-            WHEN sl.hr_id IS NOT NULL THEN 'Skilled Labour'
-            WHEN ul.hr_id IS NOT NULL THEN 'Unskilled Labour'
-            WHEN e.hr_id IS NOT NULL THEN 'Engineer'
-            ELSE 'Unknown'
-        END AS type,
-        COALESCE(sl.daily_wage, ul.daily_wage, e.salary) AS rate,
-        ha.start_date, 
+        har.id AS request_id,
+        hc.name AS category_name,
+        har.category_type,
+        har.quantity,
+        har.status AS request_status,
+        ha.start_date,
         ha.end_date,
-        COALESCE(sl.status, ul.status, 'Allocated') AS status 
-    FROM Human_Resource hr
-    -- Labour tables ko join kiya hr_id ke base par
-    LEFT JOIN Skilled_Labour sl ON sl.hr_id = hr.id
-    LEFT JOIN Unskilled_Labour ul ON ul.hr_id = hr.id
-    LEFT JOIN Engineer e ON e.hr_id = hr.id
-    -- HR_Allocation ko join kiya un tables ke allocation_id se jahan wo exist karta hai
-    JOIN HR_Allocation ha ON ha.id = COALESCE(sl.allocation_id, ul.allocation_id)
-    WHERE ha.project_id = ?
-`, [id]);
-
+        ha.total_amount
+    FROM HR_Allocation_Request har
+    JOIN HR_Category hc ON hc.id = har.category_id
+    -- LEFT JOIN kyunke ho sakta hai request Pending ho aur Allocation table mein entry na ho
+    LEFT JOIN HR_Allocation ha ON ha.request_id = har.id
+    WHERE har.project_id = ?
+`,
+    [id],
+  );
   // Equipment
-  const [equipment] = await db.query(`
+  const [equipment] = await db.query(
+    `
     SELECT
       eq.name, ec.name AS category,
       eq.ownership_type, eq.status,
@@ -353,10 +332,13 @@ const [workers] = await db.query(`
     JOIN Equipment eq ON ea.equipment_id = eq.id
     JOIN Equipment_Category ec ON eq.category_id = ec.id
     WHERE ea.project_id = ?
-  `, [id]);
+  `,
+    [id],
+  );
 
   // Materials 1
-  const [materials] = await db.query(`
+  const [materials] = await db.query(
+    `
     SELECT
       mc.name AS material, mc.unit,
       ma.quantity,
@@ -365,11 +347,14 @@ const [workers] = await db.query(`
     JOIN Material_Category mc ON ma.category_id = mc.id
     JOIN Supplier s ON ma.supplier_id = s.id
     WHERE ma.project_id = ?
-  `, [id]);
+  `,
+    [id],
+  );
   // console.log("materials result:", materials);
 
   // Subcontractors 1
-  const [subcontractors] = await db.query(`
+  const [subcontractors] = await db.query(
+    `
     SELECT
       sub.name, sc.name AS category,
       sa.price, sa.payment_status
@@ -377,12 +362,15 @@ const [workers] = await db.query(`
     JOIN Subcontractor sub ON sa.subcontractor_id = sub.id
     JOIN Subcontractor_Category sc ON sub.category_id = sc.id
     WHERE sa.project_id = ?
-  `, [id]);
-    // console.log("subcontractors result:", subcontractors);
+  `,
+    [id],
+  );
+  // console.log("subcontractors result:", subcontractors);
 
   // Actual expenses 1
 
-  const [expenses] = await db.query(`
+  const [expenses] = await db.query(
+    `
     SELECT
       ec.name AS category,
       SUM(e.amount) AS total
@@ -390,8 +378,10 @@ const [workers] = await db.query(`
     JOIN Expense_Category ec ON e.category_id = ec.id
     WHERE e.project_id = ?
     GROUP BY ec.name
-  `, [id]);
-    // console.log("expenses result:", expenses);
+  `,
+    [id],
+  );
+  // console.log("expenses result:", expenses);
 
   return {
     project: project[0],
@@ -404,12 +394,15 @@ const [workers] = await db.query(`
 };
 
 export const GetUsersByRole = async (role) => {
-  const [rows] = await db.query(`
+  const [rows] = await db.query(
+    `
     SELECT u.id, u.username
     FROM User u
     JOIN User_Role ur ON ur.user_id = u.id
     JOIN Role r ON r.id = ur.role_id
     WHERE r.name = ?
-  `, [role]);
+  `,
+    [role],
+  );
   return rows;
 };
