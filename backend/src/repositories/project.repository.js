@@ -385,7 +385,7 @@ export const GetProjectFullReport = async (id) => {
 
   return {
     project: project[0],
-    workers,
+    workers:hrAllocations,
     equipment,
     materials,
     subcontractors,
