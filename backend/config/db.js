@@ -20,9 +20,11 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   // Add this SSL block for Aiven
   ssl: {
-    ca: fs.readFileSync(path.join(__dirname, "../ca.pem")), 
-    rejectUnauthorized: true
-  }
+        ca: process.env.DB_CA_CERT 
+            ? process.env.DB_CA_CERT 
+            : fs.readFileSync(path.join(__dirname, '../ca.pem')),
+        rejectUnauthorized: true
+    }
 });
 
 export default pool.promise();
