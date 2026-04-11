@@ -51,13 +51,13 @@ export const ApprovePaymentRequest = async (requestId) => {
   }
 
   // 2. Create the Expense entry
-  await repo.CreateExpense(
-    request.project_id,
-    request.category_id,
-    requestId,
-    request.amount,
-    new Date() // Today's date
-  );
+  // await repo.CreateExpense(
+  //   request.project_id,
+  //   request.category_id,
+  //   requestId,
+  //   request.amount,
+  //   new Date() // Today's date
+  // );
 
   // 3. Update the request status
   await repo.UpdatePaymentRequestStatus(requestId, 'Approved');
@@ -81,12 +81,12 @@ export const ApproveInvoiceRequest = async (invoiceId) => {
   }
 
   // 2. Create the Revenue entry
-  await repo.CreateRevenueEntry(
-    invoice.project_id,
-    invoice.client_id,
-    invoiceId,
-    invoice.amount
-  );
+  // await repo.CreateRevenueEntry(
+  //   invoice.project_id,
+  //   invoice.client_id,
+  //   invoiceId,
+  //   invoice.amount
+  // );
 
   // 3. Update the Invoice Request status to 'Approved'
   await repo.UpdateInvoiceStatus(invoiceId, 'Approved');
