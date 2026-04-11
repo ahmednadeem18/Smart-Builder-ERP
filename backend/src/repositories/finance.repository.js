@@ -131,3 +131,11 @@ export const CreateRevenueEntry = async (projectId, clientId, requestId, amount)
   return ExecuteQuery(query, [projectId, clientId, requestId, amount]);
 }
 
+
+export const CreateInvoiceRequest = async (projectId, clientId, userId, amount) => {
+  const query = `
+    INSERT INTO Invoice_Request (project_id, client_id, user_id, amount, status, req_date)
+    VALUES (?, ?, ?, ?, 'Requested', CURDATE());
+  `;
+  return ExecuteQuery(query, [projectId, clientId, userId, amount]);
+};

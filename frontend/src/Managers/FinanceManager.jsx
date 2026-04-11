@@ -152,7 +152,7 @@ export default function FinanceDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {payments.map((p, i) => (
+                {payments.filter(p => p.requested_by !== "bilal_finance").map((p, i) => (
                   <tr key={p.payment_request_id}>
                     <td style={{ color: "#94a3b8" }}>{i + 1}</td>
                     <td style={{ fontWeight: 500 }}>{p.project_name}</td>
@@ -201,7 +201,7 @@ export default function FinanceDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {invoices.map((inv, i) => (
+                {invoices.filter(inv => inv.requested_by !== "bilal_finance").map((inv, i) => (
                   <tr key={inv.id}>
                     <td style={{ color: "#94a3b8" }}>{i + 1}</td>
                     <td style={{ fontWeight: 500 }}>{inv.project_name}</td>

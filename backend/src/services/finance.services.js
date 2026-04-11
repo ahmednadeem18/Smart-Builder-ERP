@@ -93,3 +93,14 @@ export const ApproveInvoiceRequest = async (invoiceId) => {
 
   return { success: true, message: "Invoice approved and recorded as revenue." };
 };
+
+
+export const CreateInvoiceRequest = async (projectId, clientId, userId, amount) => {
+  if (!projectId || !clientId || !amount) {
+    const error = new Error("Project, client and amount are required.");
+    error.status = 400;
+    throw error;
+  }
+  
+  return await repo.CreateInvoiceRequest(projectId, clientId, userId, amount);
+};

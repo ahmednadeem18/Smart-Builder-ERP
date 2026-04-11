@@ -13,7 +13,6 @@ router.get('/expenses', controller.GetAllExpenses);
 
 /** @route GET /api/finance/revenues */
 router.get('/revenues', controller.GetAllRevenues);
-
 /** @route GET /api/finance/payments/pending */
 router.get('/payments/pending', controller.GetPendingPayments);
 
@@ -30,6 +29,7 @@ router.post('/payment/approve/:id', controller.ApprovePaymentRequest);
  * Description: Approves a client invoice and logs it as revenue.
  */
 router.post('/invoice/approve/:id', controller.ApproveInvoiceRequest);
+router.post('/invoice/create', controller.CreateInvoiceRequest);
 
 /** * @route POST /api/finance/decline 
  * Body: { id, type }

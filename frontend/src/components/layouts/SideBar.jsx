@@ -23,6 +23,7 @@ export default function Sidebar() {
       case "Finance Officer":
         return [
           { to: "/finance-dashboard", label: "Dashboard" },
+           { to: "/invoice-generator",   label: "Generate Invoice" },
         ];
       case "HR Officer":
         return [

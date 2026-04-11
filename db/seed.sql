@@ -304,6 +304,9 @@ DESCRIBE Client;
 
 select * from User;
 
+SELECT * from Role;
 update User
 set password = 'bilal123'
 where username = 'bilal_finance';
+
+DESCRIBE Invoice_Request;

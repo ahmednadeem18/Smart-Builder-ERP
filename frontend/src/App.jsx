@@ -17,6 +17,7 @@ import MaterialDashboard from "./Managers/MaterialDashboard";
 import HRDashboard from "./Managers/HRDashboard";
 import EquipmentDashboard from "./Managers/EquipmentDashboard";
 import FinanceDashboard from "./Managers/FinanceManager";
+import InvoiceGenerator from "./pages/InvoiceGenerator";
 function App() {
   return (
     <BrowserRouter>
@@ -43,6 +44,7 @@ function App() {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="invoice-generator" element={<InvoiceGenerator />} />
             <Route path="subcontractor-dashboard" element={<SubDashboard />} />
             <Route path="hr-dashboard" element={<HRDashboard />} />
             <Route path="material-dashboard" element={<MaterialDashboard />} />

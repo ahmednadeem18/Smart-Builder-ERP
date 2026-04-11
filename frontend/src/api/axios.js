@@ -55,7 +55,8 @@ export const financeAPI = {
   getPendingPayments: ()    => api.get("/finance/payments/pending"),
   getPendingInvoices: ()    => api.get("/finance/invoices/pending"),
   approvePayment:     (id)  => api.post(`/finance/payment/approve/${id}`),
-  approveInvoice:     (id)  => api.post(`/finance/invoice/approve/${id}`),
+  approveInvoice: (id) => api.post(`/finance/invoice/approve/${id}`),
+  createInvoice: (data) => api.post("/admin/finance/invoice/create", data),
 };
 
 export const hrAPI = {

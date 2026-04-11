@@ -14,7 +14,7 @@ import { allowRoles } from "../middleware/rbac.middleware.js";
 
 const router = express.Router();
 
-router.get("/projects", verifyToken, allowRoles("Director"), GetAllProjects);
+router.get("/projects", verifyToken, allowRoles("Director", "Project Manager", "Finance Officer"), GetAllProjects);
 router.get("/projects/:id/budget", verifyToken, allowRoles("Director"), GetProjectBudgetOverview);
 router.patch("/projects/:id/status", verifyToken, allowRoles("Director", "Project Manager"), UpdateProjectStatus);
 router.get("/projects/:id/report", verifyToken, allowRoles("Director", "Project Manager"), GetProjectFullReport);

@@ -73,3 +73,29 @@ export const ApproveInvoiceRequest = async (req, res, next) => {
     });
   } catch (error) { next(error); }
 };
+
+export const CreateRevenueEntry = async (req, res, next) => {
+  try {
+    const { projectId, clientId, invoiceId, amount, date } = req.body;
+    const result = await service.CreateRevenueEntry(projectId, clientId, invoiceId, amount, date);
+
+    res.status(201).json({
+      success: true,
+      message: "Revenue entry created successfully",
+      data: result
+    });
+  } catch (error) { next(error); }
+};
+
+export const CreateInvoiceRequest = async (req, res, next) => {
+  try {
+    const { projectId, clientId, amount } = req.body;
+    const userId = req.user.id;
+    const result = await service.CreateInvoiceRequest(projectId, clientId, userId, amount);
+    res.status(201).json({
+      success: true,
+      message: "Invoice request created successfully",
+      data: result
+    });
+  } catch (error) { next(error); }
+};
