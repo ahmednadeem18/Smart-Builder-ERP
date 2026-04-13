@@ -69,7 +69,7 @@ subcontractors), financial management, and client billing.
 | swagger-ui-express | 5.0.1 | API documentation UI |
 | dotenv | — | Environment variable management |
 | cors | — | Cross-origin request handling |
-
+| recharts| — | Charts for Dashboards |
 ### Database
 | Technology | Purpose |
 |------------|---------|
@@ -264,7 +264,7 @@ Explanation:
 
 Create a `.env` file inside the frontend directory:
 
-VITE_API_URL=https://your-backend-url  
+VITE_API_URL=https://smartbuildererp.vercel.app/
 VITE_API_URL_LOCAL=http://localhost:5000  
 
 Explanation:

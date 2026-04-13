@@ -9,6 +9,21 @@ body {
   background-color: #f4f6f9;
   color: #1a1a2e;
 }
+.btn-ghost {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-ghost:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
 
 /* ── Login ──────────────────────────────────────── */
 .login-page {
